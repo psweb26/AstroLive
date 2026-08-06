@@ -1,0 +1,21 @@
+Category,Subcategory,Aliases,SuggestedConsultation,PrimaryNeed
+Career,Job Change (Decision Making,"leave my job|quit work|resign|switch company|change employer|career switch|moving companies|accept offer",Career Guidance (Decision Session),Decision Support
+Career,Promotion / Negotiation,"promotion|raise|negotiate salary|salary negotiation|promotion next month",Career Strategy,Decision Support
+Career,Startup / New Business,"start a business|launch startup|founder|new venture|business idea",Business/Timing Consultation,Timing
+Career,Vocational Fit,"career fit|what should I do|ideal career|vocational fit|strengths|career match",Career Matching Session,Guidance
+Relationship,Breakup / Reconciliation,"break up|separated|reconcile|get back together|divorce|split up",Relationship Reading (Crisis & Reconciliation),Guidance
+Relationship,Compatibility,"compatibility|are we compatible|partner match|compatibility test",Compatibility Reading,Compatibility
+Relationship,Marriage / Long-term,"marriage|engagement|long term|commit|propose|wedding planning",Relationship Forecast (Timing),Timing
+Relationship,Family Dynamics,"family problem|in-law|parent issue|household conflict|family issues",Family Session,Guidance
+Finance,Investments / Business,"invest|investment|stocks|crypto|funding|raise capital",Wealth Guidance (Timing + Strategy),Timing
+Finance,Debt / Recovery,"debt|bankruptcy|debt recovery|financial recovery",Remedial & Timing Reading,Guidance
+Health & Well-being,Mental Health (Stress/Anxiety),"anxious|depressed|can't sleep|stress|panic|anxiety",Reassurance & Coping Session,Guidance
+Health & Well-being,Chronic Concern,"chronic|recurring illness|health concern|full moon sickness",Timing & Remedies Session,Guidance
+Education,Exams / Admissions,"exam|entrance|admission|apply to college|board exams",Education Guidance (Timing & Opportunity),Education
+Education,Study/Career Decision,"what to study|which course|study vs job|higher studies or job",Education/Career Cross-session,Decision Support
+Spiritual / Personal Growth,Meaning / Purpose,"meaning|purpose|lost|spiritual growth|find purpose",Coaching / Growth Session,Growth
+Spiritual / Personal Growth,Practices & Remedies,"remedies|ritual|mantra|practice|spiritual tools",Remedies & Practice Session,Remediation
+Timing / Events,Event Timing / Muhurat,"best time to|when should I|timing|muhurta|auspicious time",Transit / Timing Consultation,Timing
+Timing / Events,Relocation / Move Timing,"move|relocate|shift city|change country|relocation timing",Transit Timing Session,Timing
+Legal / Transactional,Property / Contracts (advisory only),"property|contract|legal timing|agreement|purchase",Timing Advisory (non-legal),Guidance
+General Guidance,Chart Reading,"chart reading|natal chart|understand my chart|general reading",Intro Chart Reading,Guidance
