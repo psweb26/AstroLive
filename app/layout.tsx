@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: { default: "AstroLive", template: "%s | AstroLive" },
-  description: "A minimal product starter built with Next.js.",
+  description: "Personalized astrology consultations with trusted experts.",
 };
 
 const themeScript = `(() => {
