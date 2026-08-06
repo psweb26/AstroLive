@@ -1,7 +1,7 @@
 import { RULES, RuleDef } from "../rules";
 
 type CompiledRule = RuleDef & {
-  patternTokens: string[];
+  patternTokens: ReadonlyArray<string>;
   tokenLength: number;
 };
 
