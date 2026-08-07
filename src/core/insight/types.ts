@@ -1,5 +1,12 @@
 export type Urgency = 'low' | 'medium' | 'high';
 
+export type ConsultationType = 'decision' | 'timing' | 'education' | 'relationship' | 'general';
+
+export type ConsultationProfile = {
+  type: ConsultationType;
+  description: string;
+};
+
 export type ConsultationStyle =
   | 'practical'
   | 'analytical'
@@ -36,7 +43,7 @@ export type InsightProfile = {
   consultationStyleHint?: ConsultationStyle;
   suggestedConsultation: string;
   confidence: number; // 0..97
-  explanation: Explanation[];
+  explanation: ReadonlyArray<Explanation>;
   quickInsightText: string;
   created_at: string;
 };
