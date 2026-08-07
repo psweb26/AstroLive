@@ -1,35 +1,28 @@
 import type { ParsedInput } from './parser';
 import type { MatchedRule } from './matcher';
 import { RULES, RuleDef } from '../rules';
-import { Urgency, ConsultationStyle, PrimaryNeed, Explanation } from '../types';
-import { determineUrgency } from '../builders/urgency';
-import { determineStyle } from '../builders/style';
+import { Explanation } from '../types';
 
 export type CandidateScores = {
   categoryScores: Readonly<Record<string, number>>;
   subcategoryScores: Readonly<Record<string, number>>;
-  primaryNeed: PrimaryNeed | null;
-  consultationStyle: ConsultationStyle | null;
-  suggestedConsultation: string | null;
-  urgencyCandidate: Urgency | null;
-  explanations: ReadonlyArray<Explanation>;
+  needScores: Readonly<Record<string, number>>;
+  matchedRules: ReadonlyArray<MatchedRule>;
   totalWeight: number;
 };
 
 /**
- * Scorer consumes only ParsedInput and MatchedRule[] (signatures) and
- * produces aggregate CandidateScores used by the confidence layer.
+ * Scorer — aggregate raw evidence from MatchedRule[] into CandidateScores.
+ * This module does NOT synthesize urgency, style, or suggested consultation.
+ * It only aggregates weights and returns immutable evidence.
  */
 export function scoreCandidates(parsed: ParsedInput, matches: ReadonlyArray<MatchedRule>): CandidateScores {
-  // Build rule lookup from RULES (readonly map)
   const ruleById = new Map<string, RuleDef>();
   for (const r of RULES) ruleById.set(r.id, r);
 
   const categoryScores: Record<string, number> = {};
   const subcategoryScores: Record<string, number> = {};
   const needScores: Record<string, number> = {};
-  const explanations: Explanation[] = [];
-
   let totalWeight = 0;
 
   for (const m of matches) {
@@ -44,36 +37,13 @@ export function scoreCandidates(parsed: ParsedInput, matches: ReadonlyArray<Matc
     categoryScores[category] = (categoryScores[category] || 0) + weight;
     subcategoryScores[subcategory] = (subcategoryScores[subcategory] || 0) + weight;
     needScores[primaryNeed] = (needScores[primaryNeed] || 0) + weight;
-
-    explanations.push({ ruleId: m.ruleId, type: m.matchType, weight, message: r?.message || '' });
   }
-
-  // Decide primary need (highest-weight)
-  const primaryNeed = Object.keys(needScores).length === 0 ? null : (Object.entries(needScores).sort((a, b) => b[1] - a[1])[0][0] as PrimaryNeed);
-
-  // Determine consultation style and urgency using small helper modules
-  const consultationStyle = determineStyle(matches, ruleById);
-  const urgencyCandidate = determineUrgency(matches, ruleById);
-
-  // Suggested consultation: simple mapping based on primaryNeed
-  const suggestedConsultation = primaryNeed
-    ? primaryNeed === 'Decision Support'
-      ? 'Career guidance (decision-focused)'
-      : primaryNeed === 'Timing'
-      ? 'Timing-oriented consultation'
-      : primaryNeed === 'Education'
-      ? 'Educational planning consultation'
-      : 'General guidance session'
-    : null;
 
   return Object.freeze({
     categoryScores: Object.freeze({ ...categoryScores }),
     subcategoryScores: Object.freeze({ ...subcategoryScores }),
-    primaryNeed: primaryNeed ?? null,
-    consultationStyle: consultationStyle ?? null,
-    suggestedConsultation: suggestedConsultation,
-    urgencyCandidate: urgencyCandidate ?? null,
-    explanations: Object.freeze(explanations.map((e) => Object.freeze(e))),
+    needScores: Object.freeze({ ...needScores }),
+    matchedRules: Object.freeze(matches.map((m) => Object.freeze(m))) as ReadonlyArray<MatchedRule>,
     totalWeight,
   });
 }
