@@ -1,21 +1,24 @@
+// src/core/insight/engine/scorer.ts
+
 import type { ParsedInput } from './parser';
 import type { MatchedRule } from './matcher';
 import { RULES, RuleDef } from '../rules';
 import { Explanation } from '../types';
 
+/**
+ * A strongly-typed, immutable map of numeric scores.
+ */
+export type ScoreMap = Readonly<Record<string, number>>;
+
 export type CandidateScores = {
-  categoryScores: Readonly<Record<string, number>>;
-  subcategoryScores: Readonly<Record<string, number>>;
-  needScores: Readonly<Record<string, number>>;
+  categoryScores: ScoreMap;
+  subcategoryScores: ScoreMap;
+  needScores: ScoreMap;
   matchedRules: ReadonlyArray<MatchedRule>;
   totalWeight: number;
 };
 
-/**
- * Scorer — aggregate raw evidence from MatchedRule[] into CandidateScores.
- * This module does NOT synthesize urgency, style, or suggested consultation.
- * It only aggregates weights and returns immutable evidence.
- */
+/* inside function scoreCandidates(...) keep implementation but declare locals as Record<string, number> */
 export function scoreCandidates(parsed: ParsedInput, matches: ReadonlyArray<MatchedRule>): CandidateScores {
   const ruleById = new Map<string, RuleDef>();
   for (const r of RULES) ruleById.set(r.id, r);
@@ -40,9 +43,9 @@ export function scoreCandidates(parsed: ParsedInput, matches: ReadonlyArray<Matc
   }
 
   return Object.freeze({
-    categoryScores: Object.freeze({ ...categoryScores }),
-    subcategoryScores: Object.freeze({ ...subcategoryScores }),
-    needScores: Object.freeze({ ...needScores }),
+    categoryScores: Object.freeze({ ...categoryScores }) as ScoreMap,
+    subcategoryScores: Object.freeze({ ...subcategoryScores }) as ScoreMap,
+    needScores: Object.freeze({ ...needScores }) as ScoreMap,
     matchedRules: Object.freeze(matches.map((m) => Object.freeze(m))) as ReadonlyArray<MatchedRule>,
     totalWeight,
   });
