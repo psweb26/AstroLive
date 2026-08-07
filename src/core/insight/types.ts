@@ -1,5 +1,12 @@
 export type Urgency = 'low' | 'medium' | 'high';
 
+export type ConsultationType = 'decision' | 'timing' | 'education' | 'relationship' | 'general';
+
+export type ConsultationProfile = {
+  type: ConsultationType;
+  description: string;
+};
+
 export type ConsultationStyle =
   | 'practical'
   | 'analytical'
@@ -17,8 +24,16 @@ export type PrimaryNeed =
   | 'Remediation'
   | 'Education';
 
+export type Explanation = {
+  ruleId: string;
+  type: 'phrase' | 'token' | 'urgency' | 'style' | 'other';
+  weight: number;
+  message: string;
+};
+
 export type InsightProfile = {
   id: string;
+  engineVersion: string; // version of the insight engine that produced this profile
   session_id?: string;
   free_text?: string;
   concernCategory: string;
@@ -28,7 +43,7 @@ export type InsightProfile = {
   consultationStyleHint?: ConsultationStyle;
   suggestedConsultation: string;
   confidence: number; // 0..97
-  explanation: string[];
+  explanation: ReadonlyArray<Explanation>;
   quickInsightText: string;
   created_at: string;
 };
