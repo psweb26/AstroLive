@@ -33,7 +33,7 @@ export default function ConcernForm() {
         id="concern"
         value={text}
         onChange={(e) => setText(e.target.value)}
-        placeholder="Example: \"I'm confused between two job offers.\""
+        placeholder={`Example: "I'm confused between two job offers."`}
         style={{ width: '100%', minHeight: 160, padding: 12, fontSize: 16, borderRadius: 8, border: '1px solid #ddd' }}
       />
 
