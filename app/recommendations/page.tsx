@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import AstrologerCard from '../../components/recommendation/AstrologerCard';
 
 const recommendations = [
@@ -74,10 +75,12 @@ export default function RecommendationsPage() {
             <div style={{ display: 'flex', gap: 16 }}>
               <div style={{ flex: '0 0 120px' }}>
                 <div style={{ position: 'relative' }}>
-                  <img
+                  <Image
                     src={best.image}
                     alt={`Profile image of ${best.name}`}
-                    style={{ width: 120, height: 120, borderRadius: 12, objectFit: 'cover' }}
+                    width={120}
+                    height={120}
+                    style={{ borderRadius: 12, objectFit: 'cover' }}
                   />
                   <div
                     style={{
@@ -180,3 +183,4 @@ export default function RecommendationsPage() {
     </main>
   );
 }
+],
