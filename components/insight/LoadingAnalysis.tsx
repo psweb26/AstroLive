@@ -82,7 +82,7 @@ export default function LoadingAnalysis() {
     >
       <h2 style={{ fontSize: 26, margin: '0 0 8px 0' }}>Analyzing Your Concern</h2>
       <p style={{ margin: '0 0 18px 0', color: '#c7d2fe' }}>
-        We're understanding your concern and preparing a personalized insight.
+        We&apos;re understanding your concern and preparing a personalized insight.
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'stretch' }}>

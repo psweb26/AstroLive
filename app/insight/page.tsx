@@ -4,6 +4,7 @@ import React from 'react';
 import ConfidenceBar from '../../components/insight/ConfidenceBar';
 import ExplanationChip from '../../components/insight/ExplanationChip';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const mockInsight = {
   concernCategory: 'Career',
@@ -27,7 +28,7 @@ export default function InsightPage() {
     <main style={{ padding: 32, maxWidth: 900, margin: '0 auto', color: '#e6eef8' }}>
       <header style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: 34, margin: 0 }}>Your Personalized Insight</h1>
-        <p style={{ color: '#aab7d6', marginTop: 8 }}>Here's what we understood from your concern.</p>
+        <p style={{ color: '#aab7d6', marginTop: 8 }}>Here&apos;s what we understood from your concern.</p>
       </header>
 
       <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, alignItems: 'start' }}>

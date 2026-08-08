@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AstrologerCard({
   id,
@@ -40,11 +41,9 @@ export default function AstrologerCard({
       role="article"
       aria-label={`Recommendation for ${name}`}
     >
-      <img
-        src={image}
-        alt={`Profile image of ${name}`}
-        style={{ width: 84, height: 84, borderRadius: 10, objectFit: 'cover' }}
-      />
+      <div style={{ width: 84, height: 84, position: 'relative', flex: '0 0 84px' }}>
+        <Image src={image || '/images/avatars/placeholder.jpg'} alt={`Profile image of ${name}`} width={84} height={84} style={{ borderRadius: 10, objectFit: 'cover' }} />
+      </div>
 
       <div style={{ flex: 1 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
