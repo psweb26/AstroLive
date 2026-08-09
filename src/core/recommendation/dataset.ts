@@ -28,9 +28,9 @@ function parseStringList(val: string): string[] {
     .filter(Boolean);
 }
 
-let _astrologersCache: AstrologerRecord[] | null = null;
+let _astrologersCache: ReadonlyArray<AstrologerRecord> | null = null;
 
-export function loadAstrologers(): readonly AstrologerRecord[] {
+export function loadAstrologers(): ReadonlyArray<AstrologerRecord> {
   if (_astrologersCache) return _astrologersCache;
 
   const csvPath = path.resolve(process.cwd(), 'datasets', 'astrologers.csv');
@@ -88,6 +88,6 @@ export function getAstrologer(id: string): AstrologerRecord | undefined {
   return astrologers.find((a) => a.id === id);
 }
 
-export function getAllAstrologers(): readonly AstrologerRecord[] {
+export function getAllAstrologers(): ReadonlyArray<AstrologerRecord> {
   return loadAstrologers();
 }
