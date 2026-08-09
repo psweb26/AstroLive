@@ -1,10 +1,12 @@
 import type { InsightProfile } from '../src/core/insight/types';
 import type { Recommendation } from '../src/core/recommendation/types';
+import type { SessionBrief } from '../src/core/session-brief/buildSessionBrief';
 
 export const CONCERN_STORAGE_KEY = 'astrolive.concern';
 export const INSIGHT_PROFILE_STORAGE_KEY = 'astrolive.insightProfile';
 export const RECOMMENDATIONS_STORAGE_KEY = 'astrolive.recommendations';
 export const BOOKING_STORAGE_KEY = 'astrolive.booking';
+export const SESSION_BRIEF_STORAGE_KEY = 'astrolive.sessionBrief';
 
 export type Booking = { bookingId: string; astrologerId: string; scheduledAt: string; status: 'confirmed' };
 
@@ -86,6 +88,8 @@ export function loadStoredBooking(storage: Pick<Storage, 'getItem'>): Booking | 
     return value && typeof value === 'object' && typeof (value as Booking).bookingId === 'string' && typeof (value as Booking).astrologerId === 'string' && typeof (value as Booking).scheduledAt === 'string' && (value as Booking).status === 'confirmed' ? value as Booking : null;
   } catch { return null; }
 }
+export function storeSessionBrief(storage: Pick<Storage, 'setItem'>, brief: SessionBrief) { storage.setItem(SESSION_BRIEF_STORAGE_KEY, JSON.stringify(brief)); }
+export function loadStoredSessionBrief(storage: Pick<Storage, 'getItem'>): SessionBrief | null { try { const value: unknown=JSON.parse(storage.getItem(SESSION_BRIEF_STORAGE_KEY)??'null'); return value&&typeof value==='object'&&typeof (value as SessionBrief).bookingId==='string'&&Array.isArray((value as SessionBrief).suggested_questions)?value as SessionBrief:null; } catch{return null;} }
 
 /**
  * Connects the browser session to the canonical analysis engine without
