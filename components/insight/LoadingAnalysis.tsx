@@ -1,72 +1,11 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React from 'react';
 
-const STEPS = [
-  'Reading your concern',
-  'Identifying your primary concern',
-  'Matching consultation patterns',
-  'Preparing personalized insight',
-];
+const STEPS = ['Reading your concern', 'Analyzing your concern', 'Preparing your insight'];
 
-export default function LoadingAnalysis() {
-  const router = useRouter();
-  const [activeStep, setActiveStep] = useState(0);
-  const [completed, setCompleted] = useState<number[]>([]);
-
-  // Total duration in ms
-  const totalDuration = 2000;
-  // Step duration derived
-  const stepDuration = Math.max(120, Math.floor(totalDuration / STEPS.length));
-
-  // Respect reduced motion
-  const prefersReduced = usePrefersReducedMotion();
-
-  useEffect(() => {
-    if (prefersReduced) {
-      // Skip animations but keep UX: short delay then navigate
-      const t = setTimeout(() => router.push('/insight'), 300);
-      return () => clearTimeout(t);
-    }
-
-    const timers: number[] = [];
-
-    for (let i = 0; i < STEPS.length; i++) {
-      const activateAt = i * stepDuration;
-      const completeAt = activateAt + stepDuration;
-
-      timers.push(
-        window.setTimeout(() => {
-          setActiveStep(i);
-        }, activateAt),
-      );
-
-      timers.push(
-        window.setTimeout(() => {
-          setCompleted((prev) => [...prev, i]);
-        }, completeAt),
-      );
-    }
-
-    // Navigate after totalDuration + small buffer
-    const navTimer = window.setTimeout(() => {
-      router.push('/insight');
-    }, totalDuration + 120);
-
-    return () => {
-      timers.forEach((t) => clearTimeout(t));
-      clearTimeout(navTimer);
-    };
-  }, [router, prefersReduced, stepDuration]);
-
-  const progressStyle = useMemo(() => {
-    if (prefersReduced) return { width: '100%', transform: 'none' };
-    return {
-      transition: `width ${totalDuration}ms linear`,
-      width: `${Math.min(100, ((completed.length / STEPS.length) * 100) || 6)}%`,
-    };
-  }, [completed.length, prefersReduced]);
+export default function LoadingAnalysis({ isComplete }: { isComplete: boolean }) {
+  const completedCount = isComplete ? STEPS.length : 0;
 
   return (
     <section
@@ -86,12 +25,13 @@ export default function LoadingAnalysis() {
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'stretch' }}>
-        {STEPS.map((s, i) => {
-          const isActive = i === activeStep && !prefersReduced;
-          const isDone = completed.includes(i) || (prefersReduced && i === 0);
+        {STEPS.map((step, index) => {
+          const isActive = index === 0 && !isComplete;
+          const isDone = index < completedCount;
+
           return (
             <div
-              key={s}
+              key={step}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -119,7 +59,7 @@ export default function LoadingAnalysis() {
                 {isDone ? '✓' : isActive ? '●' : ''}
               </div>
               <div style={{ textAlign: 'left', flex: 1 }}>
-                <div style={{ fontSize: 15, color: isDone ? '#e6fffa' : isActive ? '#e0e7ff' : '#d1d5db' }}>{s}</div>
+                <div style={{ fontSize: 15, color: isDone ? '#e6fffa' : isActive ? '#e0e7ff' : '#d1d5db' }}>{step}</div>
               </div>
               <div style={{ width: 24 }} />
             </div>
@@ -134,33 +74,15 @@ export default function LoadingAnalysis() {
             height: '100%',
             background: 'linear-gradient(90deg, #7c3aed, #06b6d4)',
             borderRadius: 6,
-            ...progressStyle,
+            transition: 'width 150ms ease',
+            width: `${isComplete ? 100 : 6}%`,
           }}
         />
       </div>
 
       <p style={{ marginTop: 12, fontSize: 12, color: '#94a3b8' }}>
-        This is a simulated analysis screen. No data is sent anywhere during this demo.
+        Your concern is analyzed locally before we continue.
       </p>
     </section>
   );
-}
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia === 'undefined') return;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const handler = () => setReduced(mq.matches);
-    if (mq.addEventListener) mq.addEventListener('change', handler);
-    else mq.addListener(handler);
-    return () => {
-      if (mq.removeEventListener) mq.removeEventListener('change', handler);
-      else mq.removeListener(handler);
-    };
-  }, []);
-
-  return reduced;
 }

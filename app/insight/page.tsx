@@ -1,28 +1,39 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import ConfidenceBar from '../../components/insight/ConfidenceBar';
 import ExplanationChip from '../../components/insight/ExplanationChip';
-import Link from 'next/link';
-import Image from 'next/image';
-
-const mockInsight = {
-  concernCategory: 'Career',
-  subcategory: 'Decision Making',
-  primaryNeed: 'Decision Support',
-  confidence: 92,
-  suggestedConsultation: 'Career Decision Consultation',
-  quickInsight:
-    "Your concern suggests you're evaluating multiple career opportunities and are looking for structured guidance before making a decision.",
-  explanation: [
-    'Matched phrase "two job offers"',
-    'Detected decision-making language',
-    'Career concern identified',
-  ],
-};
+import { loadStoredInsightProfile } from '../../lib/insight-session';
+import type { InsightProfile } from '../../src/core/insight/types';
 
 export default function InsightPage() {
-  const insight = mockInsight;
+  const [insight, setInsight] = useState<Readonly<InsightProfile> | null>(null);
+  const [hasLoaded, setHasLoaded] = useState(false);
+
+  useEffect(() => {
+    const result = loadStoredInsightProfile(window.sessionStorage);
+    if (result.ok) setInsight(result.profile);
+    setHasLoaded(true);
+  }, []);
+
+  if (!hasLoaded) {
+    return null;
+  }
+
+  if (!insight) {
+    return (
+      <main style={{ padding: 32, maxWidth: 900, margin: '0 auto', color: '#e6eef8' }}>
+        <h1 style={{ fontSize: 34, margin: 0 }}>Your insight is not available yet.</h1>
+        <p style={{ color: '#aab7d6', marginTop: 8, marginBottom: 20 }}>
+          Please tell us what is on your mind so we can prepare your insight.
+        </p>
+        <Link href="/understanding-you" style={{ color: '#c4b5fd', fontWeight: 700 }}>
+          Return to Understanding You
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main style={{ padding: 32, maxWidth: 900, margin: '0 auto', color: '#e6eef8' }}>
@@ -33,7 +44,6 @@ export default function InsightPage() {
 
       <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, alignItems: 'start' }}>
         <div>
-          {/* Category Card */}
           <div
             role="region"
             aria-label="Category"
@@ -56,9 +66,18 @@ export default function InsightPage() {
                 <div style={{ fontSize: 16, fontWeight: 700, marginTop: 6 }}>{insight.primaryNeed}</div>
               </div>
             </div>
+            <div style={{ display: 'flex', gap: 20, marginTop: 16, color: '#cbd5e1', fontSize: 14 }}>
+              <div>
+                <span style={{ color: '#93c5fd', fontWeight: 600 }}>Urgency: </span>
+                {insight.urgency}
+              </div>
+              <div>
+                <span style={{ color: '#93c5fd', fontWeight: 600 }}>Consultation style: </span>
+                {insight.consultationStyleHint ?? 'Not specified'}
+              </div>
+            </div>
           </div>
 
-          {/* Quick Insight */}
           <div
             role="region"
             aria-label="Quick Insight"
@@ -72,10 +91,9 @@ export default function InsightPage() {
             }}
           >
             <div style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Quick Insight</div>
-            <p style={{ margin: 0, color: '#dbeafe', lineHeight: 1.5 }}>{insight.quickInsight}</p>
+            <p style={{ margin: 0, color: '#dbeafe', lineHeight: 1.5 }}>{insight.quickInsightText}</p>
           </div>
 
-          {/* Suggested Consultation */}
           <div
             role="region"
             aria-label="Suggested Consultation"
@@ -92,14 +110,17 @@ export default function InsightPage() {
             <div style={{ fontSize: 16, fontWeight: 700, color: '#e6eef8', marginTop: 8 }}>{insight.suggestedConsultation}</div>
           </div>
 
-          {/* Explanation chips */}
           <div style={{ marginTop: 6 }}>
             <h3 style={{ margin: '0 0 8px 0', fontSize: 16 }}>What we found</h3>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {insight.explanation.map((t, i) => (
-                <ExplanationChip key={i} text={t} />
-              ))}
-            </div>
+            {insight.explanation.length > 0 ? (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {insight.explanation.map((explanation) => (
+                  <ExplanationChip key={explanation.ruleId} text={explanation.message} />
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: '#aab7d6', margin: 0 }}>No explanation details were provided.</p>
+            )}
           </div>
         </div>
 
@@ -112,9 +133,6 @@ export default function InsightPage() {
 
             <div style={{ marginTop: 12 }}>
               <button
-                onClick={() => {
-                  /* client-side navigation via Link below */
-                }}
                 style={{
                   width: '100%',
                   background: '#7c3aed',

@@ -73,6 +73,7 @@ export type RecommendationSignal = {
 export type Recommendation = {
   astrologer: AstrologerRecord;
   finalScore: number; // 0..100
+  trustScore: number; // 0..100, computed by the trust engine
   trustBreakdown: TrustComponent[]; // trust score components
   matchExplanation: string; // templated paragraph explaining the match
   topSignals: RecommendationSignal[]; // evidence for recommendation

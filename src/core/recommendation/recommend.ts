@@ -119,6 +119,7 @@ export function recommendAstrologers(
     return {
       astrologer: scored.astrologer,
       finalScore: scored.finalScore,
+      trustScore: trustResult.finalScore,
       trustBreakdown: trustResult.components,
       matchExplanation: generateMatchExplanation(scored, insightProfile),
       topSignals: scored.signals,

@@ -17,7 +17,7 @@ import { AstrologerRecord, TrustResult, TrustComponent } from './types';
 export function computeTrustScore(astrologer: AstrologerRecord): TrustResult {
   const components: TrustComponent[] = [];
   let weightedSum = 0;
-  const totalWeight = 100; // sum of all weights
+  const totalWeight = 90; // 20 + 25 + 20 + 15 + 10
 
   // 1. Identity Verified (weight 20)
   const identityValue = astrologer.verification_docs_present ? 100 : 0;
@@ -106,8 +106,8 @@ export function computeTrustScore(astrologer: AstrologerRecord): TrustResult {
 
   weightedSum += completionRateContribution;
 
-  // Final trust score: weighted sum / 100, capped at 100, rounded
-  const finalScore = Math.round(Math.min(weightedSum, 100));
+  // Normalize the configured 90-point weighted sum to a 0..100 score.
+  const finalScore = Math.round(Math.min((weightedSum / totalWeight) * 100, 100));
 
   return {
     finalScore,

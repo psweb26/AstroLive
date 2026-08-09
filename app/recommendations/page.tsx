@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import AstrologerCard from '../../components/recommendation/AstrologerCard';
 import { Recommendation, TrustComponent } from '../../src/core/recommendation/types';
+import { loadStoredInsightProfile, storeRecommendations } from '../../lib/insight-session';
 
 type PageState = 'loading' | 'success' | 'error';
 
@@ -17,15 +18,18 @@ export default function RecommendationsPage() {
     // Fetch real recommendations from API
     async function fetchRecommendations() {
       try {
-        // Get insight_profile_id from URL params or use default
-        const params = new URLSearchParams(window.location.search);
-        const insightProfileId = params.get('insight_profile_id') || 'default-insight-001';
+        const profileResult = loadStoredInsightProfile(window.sessionStorage);
+        if (!profileResult.ok) {
+          setError('Your insight is not available yet.');
+          setState('error');
+          return;
+        }
 
         const response = await fetch('/api/recommend', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            insight_profile_id: insightProfileId,
+            insightProfile: profileResult.profile,
           }),
         });
 
@@ -34,6 +38,7 @@ export default function RecommendationsPage() {
         }
 
         const data = await response.json();
+        storeRecommendations(window.sessionStorage, data.recommendations);
         setRecommendations(data.recommendations);
         setState('success');
       } catch (err) {
@@ -60,6 +65,11 @@ export default function RecommendationsPage() {
         <header style={{ marginBottom: 20 }}>
           <h1 style={{ fontSize: 32, margin: 0, color: '#ef4444' }}>Error Loading Recommendations</h1>
           <p style={{ color: '#aab7d6', marginTop: 8 }}>{error}</p>
+          {error === 'Your insight is not available yet.' && (
+            <Link href="/understanding-you" style={{ color: '#c4b5fd', fontWeight: 700 }}>
+              Return to Understanding You
+            </Link>
+          )}
         </header>
       </main>
     );

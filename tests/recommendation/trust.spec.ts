@@ -187,8 +187,7 @@ describe('computeTrustScore', () => {
       });
 
       const result = computeTrustScore(astrologer);
-      expect(result.finalScore).toBeGreaterThanOrEqual(90);
-      expect(result.finalScore).toBeLessThanOrEqual(100);
+      expect(result.finalScore).toBe(100);
     });
 
     it('should handle low performer (all mins)', () => {
@@ -201,8 +200,7 @@ describe('computeTrustScore', () => {
       });
 
       const result = computeTrustScore(astrologer);
-      expect(result.finalScore).toBeGreaterThanOrEqual(0);
-      expect(result.finalScore).toBeLessThanOrEqual(10);
+      expect(result.finalScore).toBe(0);
     });
   });
 
@@ -212,7 +210,7 @@ describe('computeTrustScore', () => {
       const result = computeTrustScore(astrologer);
 
       const totalWeight = result.components.reduce((sum, c) => sum + c.weight, 0);
-      expect(totalWeight).toBeCloseTo(1.0, 1); // weights should sum to 1.0
+      expect(totalWeight).toBeCloseTo(0.9, 1); // frozen PRODUCT_SPEC weights sum to 90%
     });
 
     it('should reflect PRODUCT_SPEC weights', () => {
