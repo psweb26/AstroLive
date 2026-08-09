@@ -1,60 +1,107 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import AstrologerCard from '../../components/recommendation/AstrologerCard';
+import { Recommendation, TrustComponent } from '../../src/core/recommendation/types';
 
-const recommendations = [
-  {
-    id: 'ananya',
-    name: 'Dr. Ananya Sharma',
-    experience: 12,
-    price: 799,
-    languages: ['English', 'Hindi'],
-    specializations: ['Career', 'Finance'],
-    trustScore: 96,
-    recommendationReasons: [
-      'Career Decision Specialist',
-      'Practical consultation style',
-      '12 years experience',
-    ],
-    image: '/images/avatars/ananya.jpg',
-  },
-  {
-    id: 'raj',
-    name: 'Rajiv Menon',
-    experience: 8,
-    price: 599,
-    languages: ['English'],
-    specializations: ['Career', 'Education'],
-    trustScore: 90,
-    recommendationReasons: ['Empathetic advisor', 'Structured decision frameworks', '8 years experience'],
-    image: '/images/avatars/raj.jpg',
-  },
-  {
-    id: 'meera',
-    name: 'Meera Kapoor',
-    experience: 15,
-    price: 999,
-    languages: ['English', 'Hindi', 'Sanskrit'],
-    specializations: ['Relationship', 'Career'],
-    trustScore: 93,
-    recommendationReasons: ['Deep compatibility analysis', 'Holistic guidance', '15 years experience'],
-    image: '/images/avatars/meera.jpg',
-  },
-];
+type PageState = 'loading' | 'success' | 'error';
 
 export default function RecommendationsPage() {
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [state, setState] = useState<PageState>('loading');
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    // Fetch real recommendations from API
+    async function fetchRecommendations() {
+      try {
+        // Get insight_profile_id from URL params or use default
+        const params = new URLSearchParams(window.location.search);
+        const insightProfileId = params.get('insight_profile_id') || 'default-insight-001';
+
+        const response = await fetch('/api/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            insight_profile_id: insightProfileId,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setRecommendations(data.recommendations);
+        setState('success');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
+        setState('error');
+      }
+    }
+
+    fetchRecommendations();
+  }, []);
+
+  if (state === 'loading') {
+    return (
+      <main style={{ padding: 32, maxWidth: 1100, margin: '0 auto', color: '#e6eef8', textAlign: 'center' }}>
+        <h1>Finding experts who match your situation…</h1>
+        <p style={{ color: '#aab7d6' }}>Analyzing your concern • ✓ Consultation Type • Trust Match • Best Specialists</p>
+      </main>
+    );
+  }
+
+  if (state === 'error') {
+    return (
+      <main style={{ padding: 32, maxWidth: 1100, margin: '0 auto', color: '#e6eef8' }}>
+        <header style={{ marginBottom: 20 }}>
+          <h1 style={{ fontSize: 32, margin: 0, color: '#ef4444' }}>Error Loading Recommendations</h1>
+          <p style={{ color: '#aab7d6', marginTop: 8 }}>{error}</p>
+        </header>
+      </main>
+    );
+  }
+
+  if (recommendations.length === 0) {
+    return (
+      <main style={{ padding: 32, maxWidth: 1100, margin: '0 auto', color: '#e6eef8' }}>
+        <header style={{ marginBottom: 20 }}>
+          <h1 style={{ fontSize: 32, margin: 0 }}>No Recommendations Available</h1>
+          <p style={{ color: '#aab7d6', marginTop: 8 }}>
+            We could not find matching astrologers for your criteria.
+          </p>
+        </header>
+      </main>
+    );
+  }
+
   const best = recommendations[0];
   const others = recommendations.slice(1);
+
+  /**
+   * Convert trust breakdown component to human-readable label.
+   * Used to display trust score composition.
+   */
+  function trustComponentLabel(component: TrustComponent): string {
+    const labels: Record<string, string> = {
+      identity_verified: 'Identity Verified',
+      verified_consultations: 'Verified Consultations',
+      repeat_clients_pct: 'Repeat Clients',
+      experience: 'Experience',
+      completion_rate_pct: 'Completion Rate',
+    };
+    return labels[component.name] || component.label;
+  }
 
   return (
     <main style={{ padding: 32, maxWidth: 1100, margin: '0 auto', color: '#e6eef8' }}>
       <header style={{ marginBottom: 20 }}>
         <h1 style={{ fontSize: 32, margin: 0 }}>Recommended Astrologers</h1>
         <p style={{ color: '#aab7d6', marginTop: 8 }}>
-          Based on your concern, these astrologers are the strongest match.
+          Based on your insight, these astrologers are the strongest match.
         </p>
       </header>
 
@@ -75,13 +122,21 @@ export default function RecommendationsPage() {
             <div style={{ display: 'flex', gap: 16 }}>
               <div style={{ flex: '0 0 120px' }}>
                 <div style={{ position: 'relative' }}>
-                  <Image
-                    src={best.image}
-                    alt={`Profile image of ${best.name}`}
-                    width={120}
-                    height={120}
-                    style={{ borderRadius: 12, objectFit: 'cover' }}
-                  />
+                  <div
+                    style={{
+                      width: 120,
+                      height: 120,
+                      borderRadius: 12,
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: 48,
+                    }}
+                  >
+                    {best.astrologer.name.charAt(0)}
+                  </div>
                   <div
                     style={{
                       position: 'absolute',
@@ -101,18 +156,22 @@ export default function RecommendationsPage() {
               </div>
 
               <div style={{ flex: 1 }}>
-                <h2 style={{ margin: 0, fontSize: 20 }}>{best.name}</h2>
-                <div style={{ color: '#94a3b8', marginTop: 6 }}>{best.experience} years experience</div>
+                <h2 style={{ margin: 0, fontSize: 20 }}>{best.astrologer.name}</h2>
+                <div style={{ color: '#94a3b8', marginTop: 6 }}>
+                  {best.astrologer.experience_years} years experience
+                </div>
                 <div style={{ marginTop: 10, color: '#cbd5e1' }}>
-                  <strong>Languages:</strong> {best.languages.join(', ')}
+                  <strong>Languages:</strong> {best.astrologer.languages.join(', ')}
                 </div>
                 <div style={{ marginTop: 8, color: '#cbd5e1' }}>
-                  <strong>Specializations:</strong> {best.specializations.join(', ')}
+                  <strong>Specializations:</strong> {best.astrologer.specializations.join(', ')}
                 </div>
 
                 <div style={{ display: 'flex', gap: 10, marginTop: 12, alignItems: 'center' }}>
-                  <div style={{ fontWeight: 800, fontSize: 18 }}>₹{best.price}</div>
-                  <Link href={`/astrologers/${best.id}`} aria-label={`View profile of ${best.name}`}>
+                  <div style={{ fontWeight: 800, fontSize: 18 }}>
+                    ₹{best.astrologer.price_min} - ₹{best.astrologer.price_max}
+                  </div>
+                  <Link href={`/astrologers/${best.astrologer.id}`} aria-label={`View profile of ${best.astrologer.name}`}>
                     <button
                       style={{
                         background: '#7c3aed',
@@ -132,9 +191,9 @@ export default function RecommendationsPage() {
                 <div style={{ marginTop: 12 }}>
                   <h4 style={{ margin: '0 0 8px 0', fontSize: 15 }}>Why we recommend</h4>
                   <ul style={{ margin: 0, paddingLeft: 18, color: '#dbeafe' }}>
-                    {best.recommendationReasons.map((r, i) => (
+                    {best.topSignals.map((signal, i) => (
                       <li key={i} style={{ marginBottom: 6 }}>
-                        {r}
+                        {signal.label}
                       </li>
                     ))}
                   </ul>
@@ -145,17 +204,45 @@ export default function RecommendationsPage() {
                 {/* Trust score component inline for prominence */}
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ color: '#9fb0e8', fontSize: 13, fontWeight: 700, marginBottom: 6 }}>Trust Score</div>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: '#e6eef8' }}>{best.trustScore}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: '#e6eef8' }}>
+                    {best.trustBreakdown[0]?.contribution !== undefined
+                      ? Math.round(
+                          best.trustBreakdown.reduce(
+                            (sum, c) => sum + Math.round(c.normalized * c.weight * 100),
+                            0
+                          )
+                        )
+                      : Math.round(best.astrologer.repeat_client_pct)}
+                  </div>
                   <div style={{ color: '#94a3b8', marginTop: 6, fontSize: 13 }}>/ 100</div>
                 </div>
               </div>
+            </div>
+
+            {/* Match explanation */}
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+              <p style={{ margin: 0, color: '#cbd5e1', fontSize: 14, lineHeight: 1.6 }}>
+                {best.matchExplanation}
+              </p>
             </div>
           </div>
 
           {/* Other recommendations */}
           <div style={{ display: 'grid', gap: 12 }}>
-            {others.map((a) => (
-              <AstrologerCard key={a.id} {...a} />
+            {others.map((rec) => (
+              <AstrologerCard
+                key={rec.astrologer.id}
+                id={rec.astrologer.id}
+                name={rec.astrologer.name}
+                experience={rec.astrologer.experience_years}
+                price={rec.astrologer.price_min}
+                languages={rec.astrologer.languages}
+                specializations={rec.astrologer.specializations}
+                trustScore={Math.round(
+                  rec.trustBreakdown.reduce((sum, c) => sum + Math.round(c.normalized * c.weight * 100), 0)
+                )}
+                recommendationReasons={rec.topSignals.map((s) => s.label)}
+              />
             ))}
           </div>
         </div>
@@ -171,11 +258,32 @@ export default function RecommendationsPage() {
                 boxShadow: '0 8px 24px rgba(2,6,23,0.6)',
               }}
             >
-              <h3 style={{ margin: '0 0 8px 0' }}>How we match</h3>
-              <p style={{ margin: 0, color: '#cbd5e1' }}>
-                These recommendations are illustrative for the demo. In production they will be personalized to your
-                insight.
-              </p>
+              <h3 style={{ margin: '0 0 12px 0' }}>How we match</h3>
+              <div style={{ color: '#cbd5e1', fontSize: 13 }}>
+                <p style={{ margin: '0 0 12px 0' }}>
+                  These recommendations are computed from your insight profile using deterministic matching:
+                </p>
+                <ul style={{ margin: 0, paddingLeft: 16, color: '#dbeafe' }}>
+                  <li style={{ marginBottom: 8 }}>
+                    <strong>Specialization:</strong> {best.topSignals.find((s) => s.type === 'specialization_match') ? '✓' : '—'}{' '}
+                    40% weight
+                  </li>
+                  <li style={{ marginBottom: 8 }}>
+                    <strong>Primary Need:</strong> {best.topSignals.find((s) => s.type === 'primary_need_match') ? '✓' : '—'}{' '}
+                    20% weight
+                  </li>
+                  <li style={{ marginBottom: 8 }}>
+                    <strong>Trust Score:</strong> 20% weight
+                  </li>
+                  <li style={{ marginBottom: 8 }}>
+                    <strong>Style:</strong> {best.topSignals.find((s) => s.type === 'consultation_style_match') ? '✓' : '—'} 10%
+                    weight
+                  </li>
+                  <li>
+                    <strong>Experience:</strong> {best.topSignals.find((s) => s.type === 'experience') ? '✓' : '—'} 10% weight
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </aside>
