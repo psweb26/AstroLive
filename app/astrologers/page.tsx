@@ -1,41 +1,20 @@
-import { Search } from "lucide-react";
+import Link from 'next/link';
 
-import { AstrologerCard } from "@/components/AstrologerCard";
-import { Navbar } from "@/components/Navbar";
-import { astrologers } from "@/data/astrologers";
+import { Navbar } from '@/components/Navbar';
+import { Button } from '@/components/ui/button';
+import { Divider } from '@/components/ui/divider';
+import { astrologers } from '@/data/astrologers';
 
 export default function AstrologersPage() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="min-h-screen bg-canvas text-ink">
       <Navbar />
-      <main className="mx-auto max-w-7xl px-5 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="max-w-2xl">
-          <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl dark:text-white">
-            Browse Astrologers
-          </h1>
-          <p className="mt-4 text-lg text-slate-600 dark:text-slate-300">
-            Find the right expert based on your needs.
-          </p>
-        </div>
+      <main className="page-frame product-page">
+        <header className="max-w-4xl"><p className="orbital-mark ml-3 text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Specialists at AstroLive</p><h1 className="mt-5 text-5xl font-semibold leading-[0.94] tracking-[-0.04em] text-ink sm:text-6xl">A thoughtful introduction, not a generic directory.</h1><p className="mt-7 max-w-2xl text-lg leading-8 text-ink-secondary">AstroLive makes a personal recommendation after interpreting your question. This is a small featured sample, not a live searchable marketplace.</p><Button asChild variant="signal" className="mt-8"><Link href="/understanding-you">Begin with your question</Link></Button></header>
 
-        <div className="relative mt-8 max-w-xl">
-          <label htmlFor="astrologer-search" className="sr-only">
-            Search astrologers
-          </label>
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-          <input
-            id="astrologer-search"
-            type="search"
-            placeholder="Search astrologers"
-            className="h-12 w-full rounded-xl border border-slate-200 bg-white py-2 pl-12 pr-4 text-slate-950 outline-none transition-colors placeholder:text-slate-400 focus:border-violet-500 focus:ring-2 focus:ring-violet-200 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:focus:border-violet-400 dark:focus:ring-violet-950"
-          />
-        </div>
+        <Divider className="mt-16" />
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {astrologers.map((astrologer) => (
-            <AstrologerCard key={astrologer.name} {...astrologer} />
-          ))}
-        </div>
+        <section className="max-w-5xl py-10"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Featured sample</p><ol className="mt-6 divide-y divide-line border-y border-line">{astrologers.map((astrologer, index) => <li key={astrologer.id} className="grid gap-5 py-8 sm:grid-cols-[3.5rem_minmax(0,1fr)_13rem] sm:items-start"><span className="font-display text-3xl text-ink-muted">0{index + 1}</span><div><h2 className="text-2xl font-semibold text-ink sm:text-3xl">{astrologer.name}</h2><p className="mt-2 text-base leading-7 text-ink-secondary">{astrologer.specialization}</p><p className="mt-4 text-sm text-ink-muted">{astrologer.experience} years of experience · {astrologer.languages.join(', ')}</p></div><p className="border-l border-line pl-4 text-sm leading-6 text-ink-secondary sm:border-l">AstroLive will explain relevance, trust evidence, and the consultation next step after your insight.</p></li>)}</ol></section>
       </main>
     </div>
   );

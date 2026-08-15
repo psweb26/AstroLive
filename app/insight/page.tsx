@@ -1,9 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+
+import { JourneyMarker } from '@/components/insight/JourneyMarker';
 import ConfidenceBar from '../../components/insight/ConfidenceBar';
 import ExplanationChip from '../../components/insight/ExplanationChip';
+import { ProductShell } from '@/components/layout/product-shell';
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Divider } from '@/components/ui/divider';
 import { loadStoredInsightProfile } from '../../lib/insight-session';
 import type { InsightProfile } from '../../src/core/insight/types';
 
@@ -17,146 +23,62 @@ export default function InsightPage() {
     setHasLoaded(true);
   }, []);
 
-  if (!hasLoaded) {
-    return null;
-  }
+  if (!hasLoaded) return null;
 
   if (!insight) {
-    return (
-      <main style={{ padding: 32, maxWidth: 900, margin: '0 auto', color: '#e6eef8' }}>
-        <h1 style={{ fontSize: 34, margin: 0 }}>Your insight is not available yet.</h1>
-        <p style={{ color: '#aab7d6', marginTop: 8, marginBottom: 20 }}>
-          Please tell us what is on your mind so we can prepare your insight.
-        </p>
-        <Link href="/understanding-you" style={{ color: '#c4b5fd', fontWeight: 700 }}>
-          Return to Understanding You
-        </Link>
-      </main>
-    );
+    return <ProductShell><main className="product-page page-frame"><JourneyMarker current={3} /><section className="mx-auto max-w-2xl py-20"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">No interpretation yet</p><h1 className="mt-4 text-4xl font-semibold text-ink sm:text-5xl">Your question is the place to begin.</h1><p className="mt-5 text-lg leading-8 text-ink-secondary">Tell AstroLive what is on your mind, and we’ll prepare an interpretation from there.</p><Button asChild variant="signal" className="mt-8"><Link href="/understanding-you">Share your question</Link></Button></section></main></ProductShell>;
   }
 
+  const lowConfidence = insight.confidence < 60;
+
   return (
-    <main style={{ padding: 32, maxWidth: 900, margin: '0 auto', color: '#e6eef8' }}>
-      <header style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 34, margin: 0 }}>Your Personalized Insight</h1>
-        <p style={{ color: '#aab7d6', marginTop: 8 }}>Here&apos;s what we understood from your concern.</p>
-      </header>
+    <ProductShell>
+      <main className="product-page page-frame">
+        <JourneyMarker current={3} />
+        <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-20">
+          <header className="max-w-4xl">
+            <p className="orbital-mark ml-3 text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">AstroLive interpretation</p>
+            <h1 className="mt-5 text-5xl font-semibold leading-[0.94] tracking-[-0.04em] text-ink sm:text-6xl">What we understood.</h1>
+            <p className="mt-8 max-w-3xl font-display text-3xl leading-[1.14] text-ink sm:text-4xl">{insight.quickInsightText}</p>
+          </header>
 
-      <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 20, alignItems: 'start' }}>
-        <div>
-          <div
-            role="region"
-            aria-label="Category"
-            style={{
-              background: '#0f1724',
-              padding: 20,
-              borderRadius: 12,
-              boxShadow: '0 6px 20px rgba(2,6,23,0.6)',
-              marginBottom: 16,
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ color: '#93c5fd', fontSize: 13, fontWeight: 600 }}>Category</div>
-                <div style={{ fontSize: 20, fontWeight: 700, marginTop: 6 }}>{insight.concernCategory}</div>
-                <div style={{ color: '#94a3b8', marginTop: 4 }}>{insight.subcategory}</div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ color: '#c7d2fe', fontSize: 13, fontWeight: 600 }}>Primary Need</div>
-                <div style={{ fontSize: 16, fontWeight: 700, marginTop: 6 }}>{insight.primaryNeed}</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 20, marginTop: 16, color: '#cbd5e1', fontSize: 14 }}>
-              <div>
-                <span style={{ color: '#93c5fd', fontWeight: 600 }}>Urgency: </span>
-                {insight.urgency}
-              </div>
-              <div>
-                <span style={{ color: '#93c5fd', fontWeight: 600 }}>Consultation style: </span>
-                {insight.consultationStyleHint ?? 'Not specified'}
-              </div>
-            </div>
-          </div>
-
-          <div
-            role="region"
-            aria-label="Quick Insight"
-            style={{
-              background: 'linear-gradient(180deg, rgba(124,58,237,0.06), rgba(6,182,212,0.02))',
-              padding: 18,
-              borderRadius: 12,
-              boxShadow: '0 8px 30px rgba(2,6,23,0.6)',
-              border: '1px solid rgba(124,58,237,0.08)',
-              marginBottom: 16,
-            }}
-          >
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9', marginBottom: 8 }}>Quick Insight</div>
-            <p style={{ margin: 0, color: '#dbeafe', lineHeight: 1.5 }}>{insight.quickInsightText}</p>
-          </div>
-
-          <div
-            role="region"
-            aria-label="Suggested Consultation"
-            style={{
-              background: '#071024',
-              padding: 16,
-              borderRadius: 12,
-              border: '1px solid rgba(255,255,255,0.03)',
-              boxShadow: '0 6px 18px rgba(2,6,23,0.6)',
-              marginBottom: 20,
-            }}
-          >
-            <div style={{ color: '#a5b4fc', fontSize: 13, fontWeight: 600 }}>Suggested Consultation</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#e6eef8', marginTop: 8 }}>{insight.suggestedConsultation}</div>
-          </div>
-
-          <div style={{ marginTop: 6 }}>
-            <h3 style={{ margin: '0 0 8px 0', fontSize: 16 }}>What we found</h3>
-            {insight.explanation.length > 0 ? (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {insight.explanation.map((explanation) => (
-                  <ExplanationChip key={explanation.ruleId} text={explanation.message} />
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: '#aab7d6', margin: 0 }}>No explanation details were provided.</p>
-            )}
-          </div>
+          <aside className="self-start border-t border-line pt-5 lg:mt-20">
+            <ConfidenceBar confidence={insight.confidence} />
+          </aside>
         </div>
 
-        <aside>
-          <div style={{ position: 'sticky', top: 24 }}>
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ color: '#9fb0e8', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>Confidence</div>
-              <ConfidenceBar confidence={insight.confidence} />
-            </div>
+        <Divider className="mt-14" />
 
-            <div style={{ marginTop: 12 }}>
-              <button
-                style={{
-                  width: '100%',
-                  background: '#7c3aed',
-                  color: 'white',
-                  padding: '12px 14px',
-                  borderRadius: 10,
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  fontSize: 15,
-                }}
-              >
-                <Link href="/recommendations" style={{ color: 'inherit', textDecoration: 'none' }}>
-                  Find Matching Astrologers
-                </Link>
-              </button>
+        <section className="grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-20">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">The primary reading</p>
+            <h2 className="mt-4 text-4xl font-semibold leading-tight text-ink sm:text-5xl">{insight.concernCategory}</h2>
+            <p className="mt-4 max-w-2xl text-xl leading-8 text-ink-secondary">{insight.subcategory}</p>
+
+            <div className="mt-12" role="list" aria-label="Why AstroLive reached this interpretation">
+              <p className="mb-5 text-sm font-semibold text-ink">Why this reading</p>
+              <div className="space-y-5">{insight.explanation.length > 0 ? insight.explanation.map((explanation) => <ExplanationChip key={explanation.ruleId} text={explanation.message} />) : <p className="text-ink-secondary">No explanation details were provided.</p>}</div>
             </div>
           </div>
-        </aside>
-      </section>
 
-      <footer style={{ marginTop: 28, color: '#94a3b8', fontSize: 13 }}>
-        <p style={{ margin: 0 }}>This insight is for informational purposes and is generated from our analysis model.</p>
-      </footer>
-    </main>
+          <dl className="self-start border-t border-line pt-5 text-sm">
+            <div className="pb-5"><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Primary need</dt><dd className="mt-2 text-base font-semibold text-ink">{insight.primaryNeed}</dd></div>
+            <div className="border-t border-line py-5"><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Urgency</dt><dd className="mt-2 text-base font-semibold capitalize text-ink">{insight.urgency}</dd></div>
+            <div className="border-t border-line pt-5"><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Conversation style</dt><dd className="mt-2 text-base font-semibold capitalize text-ink">{insight.consultationStyleHint ?? 'Not specified'}</dd></div>
+          </dl>
+        </section>
+
+        {lowConfidence ? <Alert tone="warning" className="max-w-3xl">This is an early reading from the context shared so far. More detail can strengthen the interpretation; AstroLive is keeping that uncertainty visible.</Alert> : null}
+
+        <section className="mt-14 border-t border-line pt-10 lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-20">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">A considered next step</p>
+            <h2 className="mt-4 text-3xl font-semibold text-ink sm:text-4xl">The guidance that fits this reading.</h2>
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-ink-secondary">{insight.suggestedConsultation}</p>
+          </div>
+          <div className="mt-7 lg:mt-0"><Button asChild variant="signal"><Link href="/recommendations">Find the right astrologer</Link></Button><p className="mt-4 text-sm leading-6 text-ink-muted">AstroLive will explain why each person is a fit for this interpretation.</p></div>
+        </section>
+      </main>
+    </ProductShell>
   );
 }

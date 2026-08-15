@@ -1,6 +1,4 @@
-import { FeaturedAstrologers } from "@/components/FeaturedAstrologers";
-import { Hero } from "@/components/Hero";
-import { HowItWorks } from "@/components/HowItWorks";
+import { HomepageExperience } from "@/components/homepage-experience";
 import { Navbar } from "@/components/Navbar";
 
 export default function HomePage() {
@@ -8,9 +6,7 @@ export default function HomePage() {
     <div className="min-h-screen">
       <Navbar />
       <main>
-        <Hero />
-        <FeaturedAstrologers />
-        <HowItWorks />
+        <HomepageExperience />
       </main>
     </div>
   );

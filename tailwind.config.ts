@@ -14,12 +14,41 @@ const config: Config = {
       screens: { "2xl": "1400px" },
     },
     extend: {
+      fontFamily: {
+        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-ui)", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        canvas: {
+          DEFAULT: "hsl(var(--canvas))",
+          secondary: "hsl(var(--canvas-secondary))",
+        },
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          elevated: "hsl(var(--surface-elevated))",
+          muted: "hsl(var(--surface-muted))",
+        },
+        ink: {
+          DEFAULT: "hsl(var(--foreground))",
+          secondary: "hsl(var(--foreground-secondary))",
+          muted: "hsl(var(--foreground-muted))",
+        },
+        line: {
+          DEFAULT: "hsl(var(--border))",
+          strong: "hsl(var(--border-strong))",
+        },
+        signal: {
+          DEFAULT: "hsl(var(--accent))",
+          secondary: "hsl(var(--accent-secondary))",
+          success: "hsl(var(--success))",
+          warning: "hsl(var(--warning))",
+          danger: "hsl(var(--danger))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
