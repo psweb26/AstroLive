@@ -31,44 +31,36 @@ export function HomepageExperience() {
   return (
     <div className="overflow-x-clip">
       <section aria-labelledby="home-hero-title" className="border-b border-line">
-        <div className="page-frame py-8 sm:py-10 lg:py-14">
-          <p className="orbital-mark ml-3 text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">
-            A considered way to begin
-          </p>
-
-          <div className="relative mt-7 lg:min-h-[43rem]">
-            <div className="relative z-10 max-w-2xl bg-canvas pb-7 sm:pb-9 lg:absolute lg:bottom-14 lg:left-0 lg:w-[55%] lg:max-w-[45rem] lg:p-10">
-              <p className="text-sm font-medium text-signal-secondary">Personal insight, made more legible.</p>
-              <h1 id="home-hero-title" className="mt-4 max-w-xl font-display text-5xl font-medium leading-[0.92] tracking-[-0.045em] text-ink sm:text-6xl lg:text-7xl">
-                Begin with the question beneath the question.
-              </h1>
-              <p className="mt-6 max-w-lg text-base leading-7 text-ink-secondary sm:text-lg">
-                AstroLive helps you put a personal concern into words, understand what it may be asking for, and find the right human conversation when one would help.
-              </p>
-              <Button asChild variant="signal" className="mt-7 gap-2">
-                <Link href="/understanding-you">
-                  Begin with your question <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </Button>
-            </div>
-
-            <figure className="relative min-h-[15rem] overflow-hidden border border-line bg-canvas-secondary sm:min-h-[22rem] lg:ml-auto lg:min-h-[40rem] lg:w-[82%]">
+        <div className="page-frame py-6 sm:py-8 lg:py-10">
+          <div className="grid lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-stretch lg:gap-5">
+            <figure className="relative order-1 aspect-[16/10] overflow-hidden border border-line bg-canvas-secondary sm:aspect-[16/9] lg:order-2 lg:min-h-[32rem] lg:aspect-auto">
               <Image
                 src="/images/astrolive-observatory-hero.png"
                 alt="An astrologer sharing a celestial chart with a young person in an observatory courtyard."
                 fill
                 priority
-                sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3rem), 78vw"
+                sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3rem), 58vw"
                 className="object-cover object-center"
               />
-              <div aria-hidden="true" className="pointer-events-none absolute right-5 top-5 hidden aspect-square w-36 rounded-full border border-white/35 lg:block">
-                <span className="absolute inset-[22%] rounded-full border border-white/35" />
-                <span className="absolute left-1/2 top-[-0.2rem] h-2 w-2 -translate-x-1/2 rounded-full bg-signal" />
-              </div>
-              <figcaption className="absolute bottom-0 right-0 max-w-[17rem] border-l border-t border-white/30 bg-[#102421]/85 px-4 py-3 text-xs leading-5 text-white/85 backdrop-blur-sm sm:max-w-xs sm:px-5">
-                Celestial knowledge has always been held in human observation and conversation.
-              </figcaption>
             </figure>
+
+            <div className="relative order-2 border-x border-b border-line bg-surface/95 px-6 py-9 shadow-[0_20px_45px_-40px_hsl(var(--foreground)/0.65)] sm:px-9 sm:py-10 lg:order-1 lg:border lg:px-10 lg:py-10 xl:px-12">
+              <span aria-hidden="true" className="absolute left-0 top-9 hidden h-14 w-px bg-signal/70 lg:block" />
+              <div className="flex h-full max-w-[29rem] flex-col justify-center">
+                <p className="text-sm font-medium text-signal-secondary">Personal insight, made more legible.</p>
+                <h1 id="home-hero-title" className="mt-4 font-display text-4xl font-medium leading-[0.97] tracking-[-0.035em] text-ink sm:text-5xl lg:text-[3.55rem] xl:text-[4rem]">
+                  Begin with the question beneath the question.
+                </h1>
+                <p className="mt-6 max-w-md text-base leading-7 text-ink-secondary sm:text-lg">
+                  Put what&apos;s on your mind into words. AstroLive helps you understand it.
+                </p>
+                <Button asChild variant="signal" className="mt-7 w-fit gap-2">
+                  <Link href="/understanding-you">
+                    Begin with your question <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

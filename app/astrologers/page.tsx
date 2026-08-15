@@ -1,20 +1,65 @@
-import Link from 'next/link';
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
-import { Navbar } from '@/components/Navbar';
-import { Button } from '@/components/ui/button';
-import { Divider } from '@/components/ui/divider';
-import { astrologers } from '@/data/astrologers';
+import { Navbar } from "@/components/Navbar";
+import { OrbitalInstrument } from "@/components/astrologers/orbital-instrument";
+import { Divider } from "@/components/ui/divider";
+import { astrologers } from "@/data/astrologers";
+
+const portraits: Record<string, string> = {
+  "ananya-sharma": "/images/astrologers/ananya-placeholder.png",
+  "rohan-kapoor": "/images/astrologers/rohan-placeholder.png",
+  "meera-patel": "/images/astrologers/meera-placeholder.png",
+  "arjun-verma": "/images/astrologers/arjun-placeholder.png",
+};
 
 export default function AstrologersPage() {
   return (
     <div className="min-h-screen bg-canvas text-ink">
       <Navbar />
       <main className="page-frame product-page">
-        <header className="max-w-4xl"><p className="orbital-mark ml-3 text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Specialists at AstroLive</p><h1 className="mt-5 text-5xl font-semibold leading-[0.94] tracking-[-0.04em] text-ink sm:text-6xl">A thoughtful introduction, not a generic directory.</h1><p className="mt-7 max-w-2xl text-lg leading-8 text-ink-secondary">AstroLive makes a personal recommendation after interpreting your question. This is a small featured sample, not a live searchable marketplace.</p><Button asChild variant="signal" className="mt-8"><Link href="/understanding-you">Begin with your question</Link></Button></header>
+        <section aria-labelledby="astrologers-title" className="grid gap-10 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-center lg:gap-16">
+          <header className="max-w-xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">The human handoff</p>
+            <h1 id="astrologers-title" className="mt-5 font-display text-5xl font-semibold leading-[0.94] tracking-[-0.045em] text-ink sm:text-6xl">
+              Meet the right person to continue the conversation.
+            </h1>
+            <p className="mt-6 max-w-md text-base leading-7 text-ink-secondary sm:text-lg">AstroLive helps connect your question with a specialist who fits it.</p>
+          </header>
+          <OrbitalInstrument />
+        </section>
 
-        <Divider className="mt-16" />
+        <Divider className="mt-16 sm:mt-20" />
 
-        <section className="max-w-5xl py-10"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Featured sample</p><ol className="mt-6 divide-y divide-line border-y border-line">{astrologers.map((astrologer, index) => <li key={astrologer.id} className="grid gap-5 py-8 sm:grid-cols-[3.5rem_minmax(0,1fr)_13rem] sm:items-start"><span className="font-display text-3xl text-ink-muted">0{index + 1}</span><div><h2 className="text-2xl font-semibold text-ink sm:text-3xl">{astrologer.name}</h2><p className="mt-2 text-base leading-7 text-ink-secondary">{astrologer.specialization}</p><p className="mt-4 text-sm text-ink-muted">{astrologer.experience} years of experience · {astrologer.languages.join(', ')}</p></div><p className="border-l border-line pl-4 text-sm leading-6 text-ink-secondary sm:border-l">AstroLive will explain relevance, trust evidence, and the consultation next step after your insight.</p></li>)}</ol></section>
+        <section aria-labelledby="specialist-list-title" className="py-10 lg:py-14">
+          <div className="flex flex-col justify-between gap-4 border-b border-line pb-7 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Featured specialists</p>
+              <h2 id="specialist-list-title" className="mt-3 font-display text-4xl leading-[0.98] tracking-[-0.035em] text-ink">Guidance from those who practice it.</h2>
+            </div>
+            <p className="max-w-xs text-sm leading-6 text-ink-secondary">A limited introduction. Your insight determines the relevant next conversation.</p>
+          </div>
+
+          <ul className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {astrologers.map((astrologer) => (
+              <li key={astrologer.id}>
+                <Link href={`/astrologers/${astrologer.id}`} className="group block h-full overflow-hidden border border-line bg-surface transition-[border-color,transform] duration-200 hover:-translate-y-1 hover:border-signal-secondary focus-visible:outline-none">
+                  <figure className="relative aspect-[4/5] overflow-hidden bg-surface-muted">
+                    <Image src={portraits[astrologer.id]} alt={`Placeholder portrait for ${astrologer.name}`} fill sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1279px) calc((100vw - 4.5rem) / 2), 18rem" className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
+                    <figcaption className="sr-only">Visual placeholder portrait</figcaption>
+                  </figure>
+                  <div className="flex min-h-[13.5rem] flex-col p-5">
+                    <h3 className="font-display text-3xl leading-none text-ink">{astrologer.name}</h3>
+                    <p className="mt-3 text-sm leading-6 text-ink-secondary">{astrologer.specialization}</p>
+                    <p className="mt-5 text-xs font-medium uppercase tracking-[0.12em] text-ink-muted">{astrologer.experience} years · {astrologer.languages.join(" · ")}</p>
+                    <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-signal-secondary underline-offset-4 group-hover:underline">View profile <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></span>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       </main>
     </div>
   );
