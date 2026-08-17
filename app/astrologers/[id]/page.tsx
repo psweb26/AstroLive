@@ -9,6 +9,7 @@ import { ProductShell } from '@/components/layout/product-shell';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
 import { TrustIndicator } from '@/components/ui/trust-indicator';
+import { astrologers as directoryAstrologers } from '@/data/astrologers';
 import { loadStoredRecommendations } from '../../../lib/insight-session';
 import type { Recommendation } from '../../../src/core/recommendation/types';
 
@@ -22,8 +23,13 @@ export default function AstrologerProfilePage() {
   }, [id]);
 
   if (recommendation === undefined) return null;
+  const directoryProfile = directoryAstrologers.find((astrologer) => astrologer.id === id);
   if (!recommendation) {
-    return <ProductShell><main className="product-page page-frame"><JourneyMarker current={4} /><section className="mx-auto max-w-2xl py-20"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Specialist unavailable</p><h1 className="mt-4 text-4xl font-semibold text-ink sm:text-5xl">Return to your considered matches.</h1><p className="mt-5 text-lg leading-8 text-ink-secondary">Astrologer profiles are prepared from your current recommendations.</p><Button asChild variant="outline" className="mt-8"><Link href="/recommendations">Return to recommendations</Link></Button></section></main></ProductShell>;
+    if (!directoryProfile) {
+      return <ProductShell><main className="product-page page-frame"><section className="mx-auto max-w-2xl py-20"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Specialist unavailable</p><h1 className="mt-4 text-4xl font-semibold text-ink sm:text-5xl">This profile is not available.</h1><Button asChild variant="outline" className="mt-8"><Link href="/astrologers">Return to astrologers</Link></Button></section></main></ProductShell>;
+    }
+
+    return <ProductShell><main className="product-page page-frame"><section className="mx-auto max-w-3xl py-12 sm:py-20"><p className="orbital-mark ml-3 text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Specialist introduction</p><h1 className="mt-5 font-display text-5xl font-semibold leading-[0.94] tracking-[-0.04em] text-ink sm:text-6xl">{directoryProfile.name}</h1><p className="mt-5 max-w-2xl text-xl leading-8 text-ink-secondary">{directoryProfile.specialization}</p><dl className="mt-12 grid gap-6 border-y border-line py-7 sm:grid-cols-3"><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Experience</dt><dd className="mt-2 text-lg font-semibold text-ink">{directoryProfile.experience} years</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Languages</dt><dd className="mt-2 text-lg font-semibold text-ink">{directoryProfile.languages.join(', ')}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Consultation from</dt><dd className="mt-2 text-lg font-semibold text-ink">₹{directoryProfile.price}</dd></div></dl><div className="mt-10 border-l-2 border-signal-secondary pl-5"><p className="font-display text-2xl leading-[1.25] text-ink sm:text-3xl">Begin with your question so AstroLive can explain the most relevant specialist and prepare the consultation context.</p><Button asChild variant="signal" className="mt-7"><Link href="/understanding-you">Start an insight</Link></Button></div></section></main></ProductShell>;
   }
 
   const { astrologer, trustScore, trustBreakdown, matchExplanation, topSignals } = recommendation;

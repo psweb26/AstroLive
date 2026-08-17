@@ -99,6 +99,9 @@
   .journey-marker { @apply flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted; }
   .journey-marker span { @apply text-ink-secondary; }
   .journey-marker [aria-current="step"] { @apply text-signal-secondary; }
+  .page-enter { animation: page-enter 220ms ease-out both; }
+  .mobile-nav-enter { animation: mobile-nav-enter 180ms ease-out both; }
+  .mobile-nav-exit { animation: mobile-nav-exit 150ms ease-in both; }
   .interpretation-orbit {
     position: relative;
     width: min(14rem, 58vw);
@@ -153,6 +156,21 @@
 @keyframes orbit-breathe {
   0%, 100% { transform: scale(0.98); opacity: 0.66; }
   50% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(0.35rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mobile-nav-enter {
+  from { opacity: 0; transform: translateY(-0.35rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes mobile-nav-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-0.35rem); }
 }
 
 @keyframes kundli-orbit {

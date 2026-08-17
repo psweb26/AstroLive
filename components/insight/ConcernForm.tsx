@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Alert } from '@/components/ui/alert';
@@ -24,6 +24,7 @@ export default function ConcernForm() {
   const [text, setText] = useState('');
   const [category, setCategory] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   function updateText(value: string) {
     setText(value);
@@ -46,7 +47,7 @@ export default function ConcernForm() {
     try {
       window.sessionStorage.removeItem(INSIGHT_PROFILE_STORAGE_KEY);
       window.sessionStorage.setItem('astrolive.concern', concern);
-      router.push('/analyzing');
+      startTransition(() => router.push('/analyzing'));
     } catch {
       setError('We could not prepare your concern for analysis. Please try again.');
     }
@@ -82,7 +83,7 @@ export default function ConcernForm() {
 
       <div className="mt-8 flex flex-col-reverse items-start justify-between gap-4 border-t border-line pt-6 sm:flex-row sm:items-center">
         <p className="text-sm text-ink-muted">Your interpretation stays within this browser session.</p>
-        <Button type="submit" variant="signal">Continue to interpretation</Button>
+        <Button type="submit" variant="signal" disabled={isPending}>{isPending ? 'Preparing interpretation…' : 'Continue to interpretation'}</Button>
       </div>
     </form>
   );

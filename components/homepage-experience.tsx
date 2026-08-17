@@ -29,18 +29,18 @@ const journey = [
 
 export function HomepageExperience() {
   return (
-    <div className="overflow-x-clip">
+    <div className="page-enter overflow-x-clip">
       <section aria-labelledby="home-hero-title" className="border-b border-line">
         <div className="page-frame py-6 sm:py-8 lg:py-10">
           <div className="grid lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-stretch lg:gap-5">
-            <figure className="relative order-1 aspect-[16/10] overflow-hidden border border-line bg-canvas-secondary sm:aspect-[16/9] lg:order-2 lg:min-h-[32rem] lg:aspect-auto">
+            <figure className="group relative order-1 aspect-[16/10] overflow-hidden border border-line bg-canvas-secondary sm:aspect-[16/9] lg:order-2 lg:min-h-[32rem] lg:aspect-auto">
               <Image
                 src="/images/astrolive-observatory-hero.png"
                 alt="An astrologer sharing a celestial chart with a young person in an observatory courtyard."
                 fill
                 priority
                 sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) calc(100vw - 3rem), 58vw"
-                className="object-cover object-center"
+                className="object-cover object-center transition-transform duration-700 ease-out motion-reduce:transition-none lg:group-hover:scale-[1.015]"
               />
             </figure>
 
@@ -54,9 +54,9 @@ export function HomepageExperience() {
                 <p className="mt-6 max-w-md text-base leading-7 text-ink-secondary sm:text-lg">
                   Put what&apos;s on your mind into words. AstroLive helps you understand it.
                 </p>
-                <Button asChild variant="signal" className="mt-7 w-fit gap-2">
+                <Button asChild variant="signal" className="group mt-7 w-fit gap-2">
                   <Link href="/understanding-you">
-                    Begin with your question <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                    Begin with your question <ArrowUpRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" aria-hidden="true" />
                   </Link>
                 </Button>
               </div>
