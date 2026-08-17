@@ -1,13 +1,11 @@
-import { AppLayout } from "@/components/layout/app-layout";
-import { PageContainer } from "@/components/layout/page-container";
+import { PrototypeScopePage } from "@/components/layout/prototype-scope-page";
 
 export default function ProfilePage() {
   return (
-    <AppLayout>
-      <PageContainer className="max-w-6xl px-0">
-        <h1 className="text-2xl font-semibold">Profile</h1>
-        <p className="mt-2 text-muted-foreground">Profile content will go here.</p>
-      </PageContainer>
-    </AppLayout>
+    <PrototypeScopePage
+      eyebrow="Prototype scope"
+      title="Saved profiles are not part of this prototype."
+      description="Your concern and consultation context stay in this browser session while you move through the AstroLive journey."
+    />
   );
 }
