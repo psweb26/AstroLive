@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react';
 
 import { JourneyMarker } from '@/components/insight/JourneyMarker';
 import ConfidenceBar from '../../components/insight/ConfidenceBar';
-import ExplanationChip from '../../components/insight/ExplanationChip';
 import { ProductShell } from '@/components/layout/product-shell';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -16,6 +15,7 @@ import type { InsightProfile } from '../../src/core/insight/types';
 export default function InsightPage() {
   const [insight, setInsight] = useState<Readonly<InsightProfile> | null>(null);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
 
   useEffect(() => {
     const result = loadStoredInsightProfile(window.sessionStorage);
@@ -30,6 +30,8 @@ export default function InsightPage() {
   }
 
   const lowConfidence = insight.confidence < 60;
+  const primaryObservation = insight.explanation[0];
+  const supportingObservations = insight.explanation.slice(1);
 
   return (
     <ProductShell>
@@ -55,9 +57,10 @@ export default function InsightPage() {
             <h2 className="mt-4 text-4xl font-semibold leading-tight text-ink sm:text-5xl">{insight.concernCategory}</h2>
             <p className="mt-4 max-w-2xl text-xl leading-8 text-ink-secondary">{insight.subcategory}</p>
 
-            <div className="mt-12" role="list" aria-label="Why AstroLive reached this interpretation">
-              <p className="mb-5 text-sm font-semibold text-ink">Why this reading</p>
-              <div className="space-y-5">{insight.explanation.length > 0 ? insight.explanation.map((explanation) => <ExplanationChip key={explanation.ruleId} text={explanation.message} />) : <p className="text-ink-secondary">No explanation details were provided.</p>}</div>
+            <div className="mt-12 max-w-2xl border-l border-line-strong pl-5" aria-label="What AstroLive noticed">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-signal-secondary">What AstroLive noticed</p>
+              {primaryObservation ? <p className="mt-3 text-base leading-7 text-ink-secondary">{primaryObservation.message}</p> : <p className="mt-3 text-base leading-7 text-ink-secondary">This interpretation is based on the context you shared.</p>}
+              {supportingObservations.length > 0 ? <><button type="button" aria-expanded={evidenceOpen} aria-controls="supporting-observations" onClick={() => setEvidenceOpen((value) => !value)} className="mt-4 text-sm font-semibold text-signal-secondary underline-offset-4 hover:underline">{evidenceOpen ? 'Hide supporting observations' : 'See why'}</button>{evidenceOpen ? <ul id="supporting-observations" className="mt-4 space-y-3" aria-label="Supporting observations">{supportingObservations.map((explanation) => <li key={explanation.ruleId} className="border-l border-line pl-4 text-sm leading-6 text-ink-secondary">{explanation.message}</li>)}</ul> : null}</> : null}
             </div>
           </div>
 
@@ -68,7 +71,7 @@ export default function InsightPage() {
           </dl>
         </section>
 
-        {lowConfidence ? <Alert tone="warning" className="max-w-3xl">This is an early reading from the context shared so far. More detail can strengthen the interpretation; AstroLive is keeping that uncertainty visible.</Alert> : null}
+        {lowConfidence ? <Alert tone="warning" className="max-w-3xl"><p>Not quite enough context yet. Add a little more detail so AstroLive can interpret the concern more precisely.</p><Button asChild variant="quiet" size="sm" className="mt-2 px-0"><Link href="/understanding-you">Add more detail</Link></Button></Alert> : null}
 
         <section className="mt-14 border-t border-line pt-10 lg:grid lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-20">
           <div>

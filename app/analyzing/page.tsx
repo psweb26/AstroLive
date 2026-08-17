@@ -9,7 +9,7 @@ import LoadingAnalysis from '../../components/insight/LoadingAnalysis';
 import { ProductShell } from '@/components/layout/product-shell';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { CONCERN_STORAGE_KEY, analyzeStoredConcern } from '../../lib/insight-session';
+import { CONCERN_STORAGE_KEY, analyzeStoredConcern, loadStoredInsightProfile } from '../../lib/insight-session';
 
 export default function AnalyzingPage() {
   const router = useRouter();
@@ -20,9 +20,21 @@ export default function AnalyzingPage() {
   useEffect(() => {
     let isCurrent = true;
     let navigationTimer: number | undefined;
-    setConcern(window.sessionStorage.getItem(CONCERN_STORAGE_KEY)?.trim() || undefined);
+    const storedConcern = window.sessionStorage.getItem(CONCERN_STORAGE_KEY)?.trim() || undefined;
+    setConcern(storedConcern);
+
+    const continueToInsight = () => {
+      setIsComplete(true);
+      navigationTimer = window.setTimeout(() => router.replace('/insight'), 650);
+    };
 
     async function runAnalysis() {
+      const preview = loadStoredInsightProfile(window.sessionStorage);
+      if (preview.ok && preview.profile.free_text?.trim() === storedConcern) {
+        continueToInsight();
+        return;
+      }
+
       const result = await analyzeStoredConcern(window.sessionStorage, async (storedConcern) => {
         const response = await fetch('/api/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ free_text: storedConcern }) });
         if (!response.ok) throw new Error('Analysis request failed');
@@ -31,8 +43,7 @@ export default function AnalyzingPage() {
 
       if (!isCurrent) return;
       if (!result.ok) { setError(result.message); return; }
-      setIsComplete(true);
-      navigationTimer = window.setTimeout(() => router.replace('/insight'), 650);
+      continueToInsight();
     }
 
     void runAnalysis();

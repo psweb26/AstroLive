@@ -78,6 +78,15 @@ export function createBooking(astrologerId: string, scheduledAt: string): Bookin
   return { bookingId: `booking_${astrologerId}_${scheduledAt.replace(/[^a-zA-Z0-9]/g, '')}`, astrologerId, scheduledAt, status: 'confirmed' };
 }
 
+export function formatPrototypeSlot(slot: string): string {
+  const date = new Date(slot);
+  if (Number.isNaN(date.getTime())) return slot;
+
+  return new Intl.DateTimeFormat('en-IN', {
+    weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Kolkata',
+  }).format(date);
+}
+
 export function storeBooking(storage: Pick<Storage, 'setItem'>, booking: Booking) {
   storage.setItem(BOOKING_STORAGE_KEY, JSON.stringify(booking));
 }

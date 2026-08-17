@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { ProductShell } from '@/components/layout/product-shell';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
-import { loadStoredBooking, loadStoredRecommendations, loadStoredSessionBrief } from '../../lib/insight-session';
+import { formatPrototypeSlot, loadStoredBooking, loadStoredRecommendations, loadStoredSessionBrief } from '../../lib/insight-session';
 import type { SessionBrief } from '../../src/core/session-brief/buildSessionBrief';
 
 export default function SessionBriefPage() {
@@ -36,7 +36,7 @@ export default function SessionBriefPage() {
 
           <Divider className="mt-14" />
 
-          <dl className="grid gap-x-12 gap-y-7 py-9 sm:grid-cols-2"><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Estimated duration</dt><dd className="mt-2 text-xl font-semibold text-ink">{brief.estimated_duration}</dd></div>{specialist ? <div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Specialist</dt><dd className="mt-2 font-display text-2xl text-ink">{specialist}</dd></div> : null}{slot ? <div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Selected prototype time</dt><dd className="mt-2 text-base font-semibold text-ink">{slot}</dd></div> : null}</dl>
+          <dl className="grid gap-x-12 gap-y-7 py-9 sm:grid-cols-2"><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Estimated duration</dt><dd className="mt-2 text-xl font-semibold text-ink">{brief.estimated_duration}</dd></div>{specialist ? <div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Specialist</dt><dd className="mt-2 font-display text-2xl text-ink">{specialist}</dd></div> : null}{slot ? <div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Selected prototype time</dt><dd className="mt-2 text-base font-semibold text-ink">{formatPrototypeSlot(slot)}</dd></div> : null}</dl>
 
           <section className="grid gap-12 border-t border-line py-10 md:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">What to discuss</p><ul className="mt-5 space-y-4">{brief.youll_probably_discuss.map((item) => <li key={item} className="border-l border-line-strong pl-4 text-base leading-7 text-ink-secondary">{item}</li>)}</ul></div><div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Keep ready</p><ul className="mt-5 space-y-4">{brief.things_to_keep_ready.map((item) => <li key={item} className="border-l border-line-strong pl-4 text-base leading-7 text-ink-secondary">{item}</li>)}</ul></div></section>
 

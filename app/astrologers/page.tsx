@@ -5,16 +5,18 @@ import { ArrowUpRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { OrbitalInstrument } from "@/components/astrologers/orbital-instrument";
 import { Divider } from "@/components/ui/divider";
-import { astrologers } from "@/data/astrologers";
+import { getAllAstrologers } from "@/src/core/recommendation/dataset";
 
-const portraits: Record<string, string> = {
-  "ananya-sharma": "/images/astrologers/ananya-placeholder.png",
-  "rohan-kapoor": "/images/astrologers/rohan-placeholder.png",
-  "meera-patel": "/images/astrologers/meera-placeholder.png",
-  "arjun-verma": "/images/astrologers/arjun-placeholder.png",
-};
+const portraits = [
+  "/images/astrologers/ananya-placeholder.png",
+  "/images/astrologers/rohan-placeholder.png",
+  "/images/astrologers/meera-placeholder.png",
+  "/images/astrologers/arjun-placeholder.png",
+];
 
 export default function AstrologersPage() {
+  const astrologers = getAllAstrologers().slice(0, 4);
+
   return (
     <div className="min-h-screen bg-canvas text-ink">
       <Navbar />
@@ -42,17 +44,17 @@ export default function AstrologersPage() {
           </div>
 
           <ul className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {astrologers.map((astrologer) => (
+            {astrologers.map((astrologer, index) => (
               <li key={astrologer.id}>
                 <Link href={`/astrologers/${astrologer.id}`} className="group block h-full overflow-hidden border border-line bg-surface transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-signal-secondary hover:shadow-[0_18px_35px_-30px_hsl(var(--foreground)/0.7)] focus-visible:border-signal-secondary focus-visible:outline-none">
                   <figure className="relative aspect-[4/5] overflow-hidden bg-surface-muted">
-                    <Image src={portraits[astrologer.id]} alt={`Placeholder portrait for ${astrologer.name}`} fill sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1279px) calc((100vw - 4.5rem) / 2), 18rem" className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
+                    <Image src={portraits[index]} alt={`Placeholder portrait for ${astrologer.name}`} fill sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1279px) calc((100vw - 4.5rem) / 2), 18rem" className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
                     <figcaption className="sr-only">Visual placeholder portrait</figcaption>
                   </figure>
                   <div className="flex min-h-[13.5rem] flex-col p-5">
                     <h3 className="font-display text-3xl leading-none text-ink">{astrologer.name}</h3>
-                    <p className="mt-3 text-sm leading-6 text-ink-secondary">{astrologer.specialization}</p>
-                    <p className="mt-5 text-xs font-medium uppercase tracking-[0.12em] text-ink-muted">{astrologer.experience} years · {astrologer.languages.join(" · ")}</p>
+                    <p className="mt-3 text-sm leading-6 text-ink-secondary">{astrologer.specializations.join(" · ")}</p>
+                    <p className="mt-5 text-xs font-medium uppercase tracking-[0.12em] text-ink-muted">{astrologer.experience_years} years · {astrologer.languages.join(" · ")}</p>
                     <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-signal-secondary underline-offset-4 group-hover:underline">View profile <ArrowUpRight className="h-4 w-4 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transition-none" aria-hidden="true" /></span>
                   </div>
                 </Link>

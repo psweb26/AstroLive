@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { ProductShell } from '@/components/layout/product-shell';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
-import { loadStoredBooking, loadStoredInsightProfile, loadStoredRecommendations, storeSessionBrief, type Booking } from '../../lib/insight-session';
+import { formatPrototypeSlot, loadStoredBooking, loadStoredInsightProfile, loadStoredRecommendations, storeSessionBrief, type Booking } from '../../lib/insight-session';
 import { buildSessionBrief } from '../../src/core/session-brief/buildSessionBrief';
 
 export default function SuccessPage() {
@@ -35,7 +35,7 @@ export default function SuccessPage() {
 
           <Divider className="mt-14" />
 
-          <dl className="grid gap-x-12 gap-y-7 py-10 sm:grid-cols-2"><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Specialist</dt><dd className="mt-2 font-display text-3xl text-ink">{name}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Selected time</dt><dd className="mt-2 text-xl font-semibold text-ink">{booking.scheduledAt}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Booking status</dt><dd className="mt-2 text-base font-semibold capitalize text-ink">{booking.status}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Reference</dt><dd className="mt-2 break-all text-sm text-ink-secondary">{booking.bookingId}</dd></div></dl>
+          <dl className="grid gap-x-12 gap-y-7 py-10 sm:grid-cols-2"><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Specialist</dt><dd className="mt-2 font-display text-3xl text-ink">{name}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Selected time</dt><dd className="mt-2 text-xl font-semibold text-ink">{formatPrototypeSlot(booking.scheduledAt)}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Booking status</dt><dd className="mt-2 text-base font-semibold capitalize text-ink">{booking.status}</dd></div><div><dt className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Reference</dt><dd className="mt-2 break-all text-sm text-ink-secondary">{booking.bookingId}</dd></div></dl>
 
           <section className="border-t border-line pt-8 sm:flex sm:items-start sm:justify-between sm:gap-10"><p className="max-w-xl text-sm leading-6 text-ink-muted">Prototype disclosure: no payment or real reservation has been made. The next step is a locally prepared Session Brief.</p><Button asChild variant="signal" className="mt-6 sm:mt-0"><Link href="/session-brief">Open your Session Brief</Link></Button></section>
         </section>

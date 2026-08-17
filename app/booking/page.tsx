@@ -8,10 +8,8 @@ import { ProductShell } from '@/components/layout/product-shell';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
-import { loadStoredRecommendations, createBooking, storeBooking } from '../../lib/insight-session';
+import { loadStoredRecommendations, createBooking, formatPrototypeSlot, storeBooking } from '../../lib/insight-session';
 import type { Recommendation } from '../../src/core/recommendation/types';
-
-const SLOTS = ['Today · 6:00 PM', 'Today · 7:00 PM', 'Tomorrow · 10:00 AM', 'Tomorrow · 5:00 PM'];
 
 function Content() {
   const router = useRouter();
@@ -45,9 +43,9 @@ function Content() {
 
           <section className="grid gap-12 py-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:gap-20">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Prototype time choices</p>
-              <fieldset className="mt-6"><legend className="text-2xl font-semibold text-ink">Select a consultation time</legend><p className="mt-3 text-sm leading-6 text-ink-secondary">Choose the time that works best for this demo consultation flow.</p><div className="mt-7 grid border-y border-line sm:grid-cols-2">{SLOTS.map((value) => { const selected = slot === value; return <button key={value} type="button" aria-pressed={selected} onClick={() => { setSlot(value); setError(''); }} className={`min-h-16 border-b border-line px-4 py-4 text-left text-base font-semibold transition-[background-color,border-color,color,box-shadow] duration-150 last:border-b-0 focus-visible:outline-none sm:even:border-l sm:odd:last:border-b-0 ${selected ? 'relative z-10 bg-surface-elevated text-signal-secondary shadow-[inset_0_0_0_1px_hsl(var(--accent-secondary))]' : 'text-ink hover:bg-surface-muted/60'}`}><span>{value}</span>{selected ? <span className="ml-3 text-xs font-medium uppercase tracking-[0.14em]">Selected</span> : null}</button>; })}</div></fieldset>
-              {slot ? <p className="mt-5 text-sm text-ink-secondary">Selected time: <span className="font-semibold text-ink">{slot}</span></p> : null}
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-signal-secondary">Prototype availability</p>
+              <fieldset className="mt-6"><legend className="text-2xl font-semibold text-ink">Select a consultation time</legend><p className="mt-3 text-sm leading-6 text-ink-secondary">These fixture times belong to {rec.astrologer.name}&apos;s demo profile; they are not a live calendar.</p><div className="mt-7 grid border-y border-line sm:grid-cols-2">{rec.astrologer.available_slots.map((value) => { const selected = slot === value; return <button key={value} type="button" aria-pressed={selected} onClick={() => { setSlot(value); setError(''); }} className={`min-h-16 border-b border-line px-4 py-4 text-left text-base font-semibold transition-[background-color,border-color,color,box-shadow] duration-150 last:border-b-0 focus-visible:outline-none sm:even:border-l sm:odd:last:border-b-0 ${selected ? 'relative z-10 bg-surface-elevated text-signal-secondary shadow-[inset_0_0_0_1px_hsl(var(--accent-secondary))]' : 'text-ink hover:bg-surface-muted/60'}`}><span>{formatPrototypeSlot(value)}</span>{selected ? <span className="ml-3 text-xs font-medium uppercase tracking-[0.14em]">Selected</span> : null}</button>; })}</div></fieldset>
+              {slot ? <p className="mt-5 text-sm text-ink-secondary">Selected time: <span className="font-semibold text-ink">{formatPrototypeSlot(slot)}</span></p> : null}
               {error ? <Alert tone="danger" className="mt-5">{error}</Alert> : null}
             </div>
             <aside className="self-start border-t border-line pt-5"><p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Why this continues naturally</p><p className="mt-3 text-sm leading-6 text-ink-secondary">{rec.matchExplanation}</p></aside>

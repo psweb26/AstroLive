@@ -1,12 +1,13 @@
 'use client';
 
-import React, { FormEvent, useState, useTransition } from 'react';
+import React, { FormEvent, useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { INSIGHT_PROFILE_STORAGE_KEY } from '../../lib/insight-session';
+import { INSIGHT_PROFILE_STORAGE_KEY, isInsightProfile } from '../../lib/insight-session';
+import type { InsightProfile } from '../../src/core/insight/types';
 import CategoryChips from './CategoryChips';
 import PrivacyNote from './PrivacyNote';
 
@@ -19,12 +20,58 @@ const EXAMPLES: Record<string, string> = {
   Spiritual: 'I want guidance on my spiritual path.',
 };
 
+const MINIMUM_PREVIEW_LENGTH = 24;
+type PreviewState = 'idle' | 'listening' | 'ready';
+
 export default function ConcernForm() {
   const router = useRouter();
   const [text, setText] = useState('');
   const [category, setCategory] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [preview, setPreview] = useState<Readonly<InsightProfile> | null>(null);
+  const [previewState, setPreviewState] = useState<PreviewState>('idle');
+  const requestId = useRef(0);
+
+  useEffect(() => {
+    const concern = text.trim();
+    if (concern.length < MINIMUM_PREVIEW_LENGTH) {
+      setPreview(null);
+      setPreviewState('idle');
+      return;
+    }
+
+    const currentRequest = ++requestId.current;
+    const controller = new AbortController();
+    setPreview(null);
+    setPreviewState('listening');
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ free_text: concern }),
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error('Preview unavailable');
+
+        const result: unknown = await response.json();
+        if (requestId.current !== currentRequest || !isInsightProfile(result) || result.concernCategory === 'Unknown' || result.explanation.length === 0) return;
+
+        setPreview(result);
+        setPreviewState('ready');
+      } catch (requestError) {
+        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        if (requestId.current === currentRequest) setPreviewState('idle');
+      }
+    }, 650);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [text]);
 
   function updateText(value: string) {
     setText(value);
@@ -47,6 +94,9 @@ export default function ConcernForm() {
     try {
       window.sessionStorage.removeItem(INSIGHT_PROFILE_STORAGE_KEY);
       window.sessionStorage.setItem('astrolive.concern', concern);
+      if (preview?.free_text?.trim() === concern) {
+        window.sessionStorage.setItem(INSIGHT_PROFILE_STORAGE_KEY, JSON.stringify(preview));
+      }
       startTransition(() => router.push('/analyzing'));
     } catch {
       setError('We could not prepare your concern for analysis. Please try again.');
@@ -71,6 +121,13 @@ export default function ConcernForm() {
         className="mt-4 min-h-[17rem] border-line-strong bg-surface-elevated px-5 py-5 font-display text-2xl leading-relaxed placeholder:font-sans placeholder:text-base placeholder:leading-7 placeholder:text-ink-muted focus:border-signal-secondary sm:text-3xl"
       />
       <p id="concern-guidance" className="mt-3 max-w-2xl text-sm leading-6 text-ink-secondary">There is no required format. Share the context, decision, or feeling that matters most to you.</p>
+
+      {previewState !== 'idle' ? (
+        <section aria-live="polite" aria-label="Interpretation preview" className="mt-6 max-w-2xl border-l border-line-strong pl-4">
+          {previewState === 'listening' ? <p className="text-sm leading-6 text-ink-muted">AstroLive is quietly considering what you&apos;ve shared.</p> : null}
+          {previewState === 'ready' && preview ? <><p className="text-xs font-semibold uppercase tracking-[0.14em] text-signal-secondary">What AstroLive is picking up</p><p className="mt-2 font-display text-2xl leading-tight text-ink">{preview.subcategory}</p><p className="mt-2 text-sm leading-6 text-ink-secondary">A {preview.primaryNeed.toLowerCase()} focus is beginning to emerge.</p></> : null}
+        </section>
+      ) : null}
 
       <div className="mt-10 border-t border-line pt-6">
         <p className="text-sm font-semibold text-ink">A prompt, if you want one</p>
