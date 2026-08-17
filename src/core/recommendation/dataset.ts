@@ -28,6 +28,32 @@ function parseStringList(val: string): string[] {
     .filter(Boolean);
 }
 
+function parseCsvRow(line: string): string[] {
+  const values: string[] = [];
+  let current = '';
+  let quoted = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"') {
+      if (quoted && line[index + 1] === '"') {
+        current += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === ',' && !quoted) {
+      values.push(current);
+      current = '';
+    } else {
+      current += character;
+    }
+  }
+
+  values.push(current);
+  return values;
+}
+
 let _astrologersCache: ReadonlyArray<AstrologerRecord> | null = null;
 
 export function loadAstrologers(): ReadonlyArray<AstrologerRecord> {
@@ -41,7 +67,6 @@ export function loadAstrologers(): ReadonlyArray<AstrologerRecord> {
   const header = lines.shift();
   if (!header) throw new Error('astrologers.csv is empty');
 
-  const headerFields = header.split(',');
   // Expected columns (per PRODUCT_SPEC):
   // id,name,specializations,methods,consultation_style,experience_years,verified_consultations_count,
   // repeat_client_pct,completion_rate_pct,verification_docs_present,languages,price_min,price_max,
@@ -50,7 +75,7 @@ export function loadAstrologers(): ReadonlyArray<AstrologerRecord> {
   const astrologers: AstrologerRecord[] = [];
 
   for (const line of lines) {
-    const values = line.split(',');
+    const values = parseCsvRow(line);
     if (values.length < 15) {
       // Skip malformed lines
       console.warn(`Skipping malformed astrologer line: ${line.substring(0, 50)}...`);
@@ -60,7 +85,7 @@ export function loadAstrologers(): ReadonlyArray<AstrologerRecord> {
     const record: AstrologerRecord = {
       id: values[0].trim(),
       name: values[1].trim(),
-      short_bio: values[15]?.trim() || '',
+      short_bio: values[14]?.trim() || '',
       specializations: parseStringList(values[2]),
       methods: parseStringList(values[3]),
       consultation_style: (values[4].trim() as ConsultationStyle) || 'Practical',

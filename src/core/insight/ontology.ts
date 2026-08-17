@@ -11,6 +11,32 @@ export type OntologyEntry = {
 
 let _ontology: OntologyEntry[] | null = null;
 
+function parseCsvRow(line: string): string[] {
+  const values: string[] = [];
+  let current = '';
+  let quoted = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"') {
+      if (quoted && line[index + 1] === '"') {
+        current += '"';
+        index += 1;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (character === ',' && !quoted) {
+      values.push(current);
+      current = '';
+    } else {
+      current += character;
+    }
+  }
+
+  values.push(current);
+  return values;
+}
+
 function normalizeAlias(a: string) {
   return a
     .toLowerCase()
@@ -25,8 +51,7 @@ export function loadOntology(): OntologyEntry[] {
   const lines = raw.split(/\r?\n/).filter(Boolean);
   const header = lines.shift();
   _ontology = lines.map((line) => {
-    // naive CSV split (values don't contain commas aside from aliases)
-    const parts = line.split(',');
+    const parts = parseCsvRow(line);
     // Category,Subcategory,Aliases,SuggestedConsultation,PrimaryNeed
     const [category, subcategory, aliasesRaw, suggestedConsultation, primaryNeed] = parts;
     const aliases = (aliasesRaw || '')

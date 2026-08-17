@@ -15,21 +15,14 @@ export function buildRuleIndex() {
     const tokens = pattern.length > 0 ? pattern.split(' ').filter(Boolean) : [];
     const cr: CompiledRule = Object.freeze({ ...r, patternTokens: Object.freeze(tokens), tokenLength: tokens.length });
 
-    if (r.type === 'phrase') {
-      const key = pattern;
-      const arr = phraseMap.get(key) || [];
+    const patterns = [pattern, ...(r.aliases ?? [])];
+    const targetMap = r.type === 'phrase' ? phraseMap : r.type === 'token' ? tokenMap : styleMap;
+
+    for (const key of patterns) {
+      if (!key) continue;
+      const arr = targetMap.get(key) || [];
       arr.push(cr);
-      phraseMap.set(key, arr);
-    } else if (r.type === 'token') {
-      const key = pattern;
-      const arr = tokenMap.get(key) || [];
-      arr.push(cr);
-      tokenMap.set(key, arr);
-    } else if (r.type === 'style') {
-      const key = pattern;
-      const arr = styleMap.get(key) || [];
-      arr.push(cr);
-      styleMap.set(key, arr);
+      targetMap.set(key, arr);
     }
   }
 

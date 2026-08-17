@@ -31,7 +31,7 @@ const themeScript = `(() => {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeScript }} /></head>
       <body className={`${display.variable} ${ui.variable}`}><ThemeProvider>{children}</ThemeProvider></body>
     </html>

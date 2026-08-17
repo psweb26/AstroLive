@@ -1,0 +1,49 @@
+<svg width="1400" height="1400" viewBox="0 0 1400 1400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(700 660) rotate(90) scale(760 760)">
+      <stop stop-color="#0E1D2E"/>
+      <stop offset="0.52" stop-color="#121D32"/>
+      <stop offset="1" stop-color="#090F1A"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="280" y1="220" x2="1120" y2="1180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5E5B9"/>
+      <stop offset="0.45" stop-color="#D7B77A"/>
+      <stop offset="1" stop-color="#B88D46"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="1400" fill="url(#bg)"/>
+  <g opacity="0.9">
+    <circle cx="700" cy="700" r="420" stroke="url(#gold)" stroke-width="2.5" opacity="0.85"/>
+    <circle cx="700" cy="700" r="330" stroke="url(#gold)" stroke-width="2" opacity="0.7"/>
+    <circle cx="700" cy="700" r="240" stroke="url(#gold)" stroke-width="2" opacity="0.6"/>
+    <circle cx="700" cy="700" r="150" stroke="url(#gold)" stroke-width="2" opacity="0.45"/>
+
+    <g stroke="url(#gold)" stroke-width="2" opacity="0.75">
+      <line x1="700" y1="280" x2="700" y2="1120"/>
+      <line x1="280" y1="700" x2="1120" y2="700"/>
+      <line x1="398" y1="398" x2="1002" y2="1002"/>
+      <line x1="1002" y1="398" x2="398" y2="1002"/>
+    </g>
+
+    <g fill="#E8D5A0" opacity="0.8" font-family="Georgia, serif" font-weight="700" font-size="56" text-anchor="middle">
+      <text x="700" y="190">♈</text>
+      <text x="1188" y="740">♉</text>
+      <text x="700" y="1210">♊</text>
+      <text x="212" y="740">♋</text>
+      <text x="963" y="352">♌</text>
+      <text x="1088" y="972">♍</text>
+      <text x="700" y="1110">♎</text>
+      <text x="312" y="972">♏</text>
+      <text x="438" y="352">♐</text>
+      <text x="1120" y="560">♑</text>
+      <text x="280" y="560">♒</text>
+      <text x="500" y="1098">♓</text>
+    </g>
+
+    <g fill="#D4B77C" opacity="0.85">
+      <circle cx="700" cy="700" r="46" fill="#1D1A3E" stroke="#D4B77C" stroke-width="2"/>
+      <circle cx="700" cy="700" r="14" fill="#D4B77C"/>
+    </g>
+  </g>
+</svg>

@@ -33,6 +33,10 @@ export function scoreCandidates(parsed: ParsedInput, matches: ReadonlyArray<Matc
     const weight = typeof m.score === 'number' ? m.score : r?.weight ?? 0;
     totalWeight += weight;
 
+    // Metadata-only matches (for example urgency) should remain available to
+    // resolvers without creating a false "Unknown" interpretation candidate.
+    if (weight <= 0) continue;
+
     const category = r?.category || 'Unknown';
     const subcategory = r?.subcategory || 'Unknown';
     const primaryNeed = (r?.primaryNeed as string) || 'Guidance';

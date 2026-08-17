@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { INSIGHT_PROFILE_STORAGE_KEY, isInsightProfile } from '../../lib/insight-session';
+import { CONCERN_STORAGE_KEY, INSIGHT_PROFILE_STORAGE_KEY, isInsightProfile } from '../../lib/insight-session';
 import type { InsightProfile } from '../../src/core/insight/types';
 import CategoryChips from './CategoryChips';
 import PrivacyNote from './PrivacyNote';
@@ -32,6 +32,11 @@ export default function ConcernForm() {
   const [preview, setPreview] = useState<Readonly<InsightProfile> | null>(null);
   const [previewState, setPreviewState] = useState<PreviewState>('idle');
   const requestId = useRef(0);
+
+  useEffect(() => {
+    const storedConcern = window.sessionStorage.getItem(CONCERN_STORAGE_KEY)?.trim();
+    if (storedConcern) setText(storedConcern);
+  }, []);
 
   useEffect(() => {
     const concern = text.trim();
@@ -93,7 +98,7 @@ export default function ConcernForm() {
 
     try {
       window.sessionStorage.removeItem(INSIGHT_PROFILE_STORAGE_KEY);
-      window.sessionStorage.setItem('astrolive.concern', concern);
+      window.sessionStorage.setItem(CONCERN_STORAGE_KEY, concern);
       if (preview?.free_text?.trim() === concern) {
         window.sessionStorage.setItem(INSIGHT_PROFILE_STORAGE_KEY, JSON.stringify(preview));
       }
