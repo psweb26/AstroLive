@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { Navbar } from "@/components/Navbar";
-import { OrbitalInstrument } from "@/components/astrologers/orbital-instrument";
+import { AstrologyChart } from "@/components/AstrologyChart";
 import { Divider } from "@/components/ui/divider";
 import { getAllAstrologers } from "@/src/core/recommendation/dataset";
 
@@ -29,7 +29,7 @@ export default function AstrologersPage() {
             </h1>
             <p className="mt-6 max-w-md text-base leading-7 text-ink-secondary sm:text-lg">AstroLive helps connect your question with a specialist who fits it.</p>
           </header>
-          <OrbitalInstrument />
+          <AstrologyChart />
         </section>
 
         <Divider className="mt-16 sm:mt-20" />
